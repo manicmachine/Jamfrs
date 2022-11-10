@@ -71,7 +71,7 @@ impl<'a> ApiEndpoints<'a> {
             ApiEndpoints::UserShow { host, id } => {
                 format!("https://{host}/JSSResource/users/id/{id}")
             }
-            ApiEndpoints::UserList(host) => format!("https://{host}/JSSResource/computers"),
+            ApiEndpoints::UserList(host) => format!("https://{host}/JSSResource/users"),
         }
     }
 }
