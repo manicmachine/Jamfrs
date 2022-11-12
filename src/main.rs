@@ -5,7 +5,6 @@ mod session;
 
 use crate::api_endpoints::ApiEndpoints;
 use crate::api_token::ApiToken;
-use crate::args::{ComputerSubcommand, EntityType, MobileSubcommand, UserSubcommand};
 use crate::session::Session;
 use args::JamfrsArgs;
 use clap::Parser;
@@ -17,8 +16,12 @@ use xmltree::{Element, EmitterConfig};
 fn main() {
     let client = Client::new();
     let args = JamfrsArgs::parse();
-    let mut jps_session =
-        Session::new(args.server_address, args.port, args.username, args.password);
+    let mut jps_session = Session::new(
+        args.server_address.clone(),
+        args.port,
+        args.username.clone(),
+        args.password.clone(),
+    );
 
     // TODO: Has to be a better way; clean this up
     // Check if user entered a protocol, and if so, remove it
@@ -31,8 +34,9 @@ fn main() {
     };
 
     // Authenticate with the server and store the token
+    let (_, auth_endpoint) = ApiEndpoints::TokenAuth(&jps_session.server_address).usage();
     let res = client
-        .post(ApiEndpoints::TokenAuth(&jps_session.server_address).value())
+        .post(auth_endpoint)
         .basic_auth(&jps_session.username, Some(&jps_session.password));
 
     jps_session.api_token = match res.send() {
@@ -43,88 +47,12 @@ fn main() {
         ),
     };
 
-    // Determine HTTP method and api endpoint for given command
-    let (http_method, api_endpoint) = match args.entity_type {
-        EntityType::Computer(command) => match command.command {
-            ComputerSubcommand::Delete { id } => (
-                reqwest::Method::DELETE,
-                ApiEndpoints::ComputerDelete {
-                    host: &jps_session.server_address,
-                    id,
-                },
-            ),
-            ComputerSubcommand::Show { id } => (
-                reqwest::Method::GET,
-                ApiEndpoints::ComputerShow {
-                    host: &jps_session.server_address,
-                    id,
-                },
-            ),
-            ComputerSubcommand::Search { search_query } => (
-                reqwest::Method::GET,
-                ApiEndpoints::ComputerSearch {
-                    host: &jps_session.server_address,
-                    query_string: search_query,
-                },
-            ),
-            ComputerSubcommand::List => (
-                reqwest::Method::GET,
-                ApiEndpoints::ComputerList(&jps_session.server_address),
-            ),
-        },
-        EntityType::Mobile(command) => match command.command {
-            MobileSubcommand::Delete { id } => (
-                reqwest::Method::DELETE,
-                ApiEndpoints::MobileDelete {
-                    host: &jps_session.server_address,
-                    id,
-                },
-            ),
-            MobileSubcommand::Show { id } => (
-                reqwest::Method::GET,
-                ApiEndpoints::MobileShow {
-                    host: &jps_session.server_address,
-                    id,
-                },
-            ),
-            MobileSubcommand::Search { search_query } => (
-                reqwest::Method::GET,
-                ApiEndpoints::MobileSearch {
-                    host: &jps_session.server_address,
-                    query_string: search_query,
-                },
-            ),
-            MobileSubcommand::List => (
-                reqwest::Method::GET,
-                ApiEndpoints::MobileList(&jps_session.server_address),
-            ),
-        },
-        EntityType::User(command) => match command.command {
-            UserSubcommand::Delete { id } => (
-                reqwest::Method::DELETE,
-                ApiEndpoints::UserDelete {
-                    host: &jps_session.server_address,
-                    id,
-                },
-            ),
-            UserSubcommand::Show { id } => (
-                reqwest::Method::GET,
-                ApiEndpoints::UserShow {
-                    host: &jps_session.server_address,
-                    id,
-                },
-            ),
-            UserSubcommand::List => (
-                reqwest::Method::GET,
-                ApiEndpoints::UserList(&jps_session.server_address),
-            ),
-        },
-    };
+    let (http_method, api_endpoint) = ApiEndpoints::get_endpoint_for_args(&args).usage();
 
     // TODO: Clean this up
     let res = if http_method == reqwest::Method::GET {
         client
-            .get(api_endpoint.value())
+            .get(api_endpoint)
             .bearer_auth(&jps_session.api_token.unwrap().token)
             .header(
                 "accept",
@@ -140,7 +68,7 @@ fn main() {
             .unwrap()
     } else if http_method == reqwest::Method::DELETE {
         client
-            .delete(api_endpoint.value())
+            .delete(api_endpoint)
             .bearer_auth(&jps_session.api_token.unwrap().token)
             .send()
             .unwrap()

@@ -45,7 +45,7 @@ pub enum EntityType {
 #[derive(Debug, Args)]
 pub struct ComputerCommand {
     #[clap(subcommand)]
-    pub command: ComputerSubcommand,
+    pub subcommand: ComputerSubcommand,
 }
 
 #[derive(Debug, Subcommand)]
@@ -64,7 +64,7 @@ pub enum ComputerSubcommand {
 #[derive(Debug, Args)]
 pub struct MobileCommand {
     #[clap(subcommand)]
-    pub command: MobileSubcommand,
+    pub subcommand: MobileSubcommand,
 }
 
 #[derive(Debug, Subcommand)]
@@ -83,7 +83,7 @@ pub enum MobileSubcommand {
 #[derive(Debug, Args)]
 pub struct UserCommand {
     #[clap(subcommand)]
-    pub command: UserSubcommand,
+    pub subcommand: UserSubcommand,
 }
 
 #[derive(Debug, Subcommand)]
