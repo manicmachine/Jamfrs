@@ -40,10 +40,12 @@ pub struct JamfrsArgs {
 pub enum EntityType {
     /// Work with computer records
     Computer(ComputerCommand),
-    ///Work with mobile device records
+    /// Work with mobile device records
     Mobile(MobileCommand),
     /// Work with users records
     User(UserCommand),
+    /// Work with smart & static groups
+    Group(GroupCommand),
 }
 
 #[derive(Debug, Args)]
@@ -97,5 +99,42 @@ pub enum UserSubcommand {
     /// Show an existing user record
     Show { id: u32 },
     /// List all user records
+    List,
+}
+
+#[derive(Debug, Parser)]
+pub struct GroupCommand {
+    #[clap(subcommand)]
+    pub group_command: GroupSubcommand,
+}
+
+#[derive(Debug, Subcommand)]
+pub enum GroupSubcommand {
+    #[clap(subcommand)]
+    Computer(ComputerGroupCommand),
+    #[clap(subcommand)]
+    Mobile(MobileGroupCommand),
+    #[clap(subcommand)]
+    User(UserGroupCommand),
+}
+
+#[derive(Debug, Subcommand)]
+pub enum ComputerGroupCommand {
+    Delete { id: u32 },
+    Show { id: u32 },
+    List,
+}
+
+#[derive(Debug, Subcommand)]
+pub enum MobileGroupCommand {
+    Delete { id: u32 },
+    Show { id: u32 },
+    List,
+}
+
+#[derive(Debug, Subcommand)]
+pub enum UserGroupCommand {
+    Delete { id: u32 },
+    Show { id: u32 },
     List,
 }

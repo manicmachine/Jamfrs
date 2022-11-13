@@ -16,13 +16,16 @@ use xmltree::{Element, EmitterConfig};
 
 fn main() {
     let args = JamfrsArgs::parse();
-    let client = Client::builder().danger_accept_invalid_certs(args.insecure).build().unwrap();
+    let client = Client::builder()
+        .danger_accept_invalid_certs(args.insecure)
+        .build()
+        .unwrap();
     let mut jps_session = Session::new(
         args.server_address.clone(),
         args.port,
         args.username.clone(),
         args.password.clone(),
-        args.insecure
+        args.insecure,
     );
 
     // Authenticate with the server and store the token
@@ -36,12 +39,19 @@ fn main() {
             if res.status().is_success() {
                 Some(res.json::<ApiToken>().unwrap())
             } else {
-                eprintln!("Failed to retrieve auth token from {}. {}", jps_session.server_address, res.status());
+                eprintln!(
+                    "Failed to retrieve auth token from {}. {}",
+                    jps_session.server_address,
+                    res.status()
+                );
                 None
             }
-        },
+        }
         Err(err) => {
-            eprintln!("Failed to retrieve auth token from {}: {}", jps_session.server_address, err);
+            eprintln!(
+                "Failed to retrieve auth token from {}: {}",
+                jps_session.server_address, err
+            );
             None
         }
     };
@@ -50,7 +60,8 @@ fn main() {
         exit(1);
     }
 
-    let (http_method, api_endpoint) = ApiEndpoints::get_endpoint(&args.entity_type, &jps_session.server_address).usage();
+    let (http_method, api_endpoint) =
+        ApiEndpoints::get_endpoint(&args.entity_type, &jps_session.server_address).usage();
 
     // TODO: Clean this up
     let res = if http_method == reqwest::Method::GET {

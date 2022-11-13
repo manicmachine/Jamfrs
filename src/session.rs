@@ -1,6 +1,6 @@
-use std::process::exit;
-use regex::Regex;
 use crate::api_token::ApiToken;
+use regex::Regex;
+use std::process::exit;
 
 #[derive(Debug)]
 pub struct Session {
@@ -18,7 +18,7 @@ impl Session {
         port: Option<u16>,
         username: String,
         password: String,
-        insecure: bool
+        insecure: bool,
     ) -> Self {
         let proto_pattern = Regex::new(r"^https?://").unwrap();
         let port_pattern = Regex::new(r":[0-9]*$").unwrap();
@@ -31,7 +31,8 @@ impl Session {
                     443
                 } else if port_pattern.is_match(&server_address) {
                     // Extract the port value from the server_address
-                    let mut port_str = port_pattern.captures(&server_address).unwrap()[0].to_string();
+                    let mut port_str =
+                        port_pattern.captures(&server_address).unwrap()[0].to_string();
                     port_str.remove(0); // remove semi-colon
 
                     port_str.parse::<u16>().unwrap()
@@ -49,7 +50,7 @@ impl Session {
             // Check if the user provided a protocol as part of the server_address, and if so,
             // do not prepend the protocol implied by the --insecure flag
             if !proto_pattern.is_match(&server_address) {
-                addr.push_str(if insecure { "http://" } else { "https://"});
+                addr.push_str(if insecure { "http://" } else { "https://" });
             }
 
             addr.push_str(server_address.as_str());
@@ -72,7 +73,7 @@ impl Session {
             username,
             password,
             insecure,
-            api_token: None
+            api_token: None,
         }
     }
 }
