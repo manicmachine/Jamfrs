@@ -111,30 +111,42 @@ pub struct GroupCommand {
 #[derive(Debug, Subcommand)]
 pub enum GroupSubcommand {
     #[clap(subcommand)]
+    /// Work with computer groups
     Computer(ComputerGroupCommand),
     #[clap(subcommand)]
+    /// Work with mobile device groups
     Mobile(MobileGroupCommand),
     #[clap(subcommand)]
+    /// Work with user groups
     User(UserGroupCommand),
 }
 
 #[derive(Debug, Subcommand)]
 pub enum ComputerGroupCommand {
+    /// Delete an existing computer group
     Delete { id: u32 },
+    /// Show an existing computer group
     Show { id: u32 },
+    /// List all computer groups
     List,
 }
 
 #[derive(Debug, Subcommand)]
 pub enum MobileGroupCommand {
+    /// Delete an existing mobile device group
     Delete { id: u32 },
+    /// Show an existing mobile device group
     Show { id: u32 },
+    /// List all mobile device groups
     List,
 }
 
 #[derive(Debug, Subcommand)]
 pub enum UserGroupCommand {
+    /// Delete an existing user group
     Delete { id: u32 },
+    /// Show an existing user group
     Show { id: u32 },
+    /// List all user groups
     List,
 }
