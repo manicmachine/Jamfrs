@@ -20,13 +20,19 @@ fn main() {
         .danger_accept_invalid_certs(args.insecure)
         .build()
         .unwrap();
-    let mut jps_session = Session::new(
+    let mut jps_session = match Session::new(
         args.server_address.clone(),
         args.port,
         args.username.clone(),
         args.password.clone(),
         args.insecure,
-    );
+    ) {
+        Ok(session) => session,
+        Err(err) => {
+            eprintln!("{}", err);
+            exit(1);
+        }
+    };
 
     // Authenticate with the server and store the token
     let (_, auth_endpoint) = ApiEndpoints::TokenAuth(&jps_session.server_address).usage();

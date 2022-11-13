@@ -1,6 +1,5 @@
 use crate::api_token::ApiToken;
 use regex::Regex;
-use std::process::exit;
 
 #[derive(Debug)]
 pub struct Session {
@@ -19,7 +18,7 @@ impl Session {
         username: String,
         password: String,
         insecure: bool,
-    ) -> Self {
+    ) -> Result<Self, &'static str> {
         let proto_pattern = Regex::new(r"^https?://").unwrap();
         let port_pattern = Regex::new(r":[0-9]*$").unwrap();
 
@@ -60,20 +59,186 @@ impl Session {
             if !port_pattern.is_match(&addr) {
                 addr.push_str(format!(":{}", port_val).as_str());
             } else if port.is_some() {
-                eprintln!("Error: Don't include a port with the server_address while using the --port flag");
-                exit(1);
+                return Err("Error: Don't include a port with the server_address while using the --port flag");
             }
 
             addr
         };
 
-        Self {
+        Ok(Self {
             server_address: server_address_val,
             port: port_val,
             username,
             password,
             insecure,
             api_token: None,
-        }
+        })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::Session;
+
+    #[test]
+    fn test_jamfcloud() {
+        let session = Session::new(
+            String::from("test.jamfcloud.com"),
+            None,
+            String::from("test"),
+            String::from("test-password"),
+            false,
+        )
+        .unwrap();
+
+        assert!(session.server_address.starts_with("https://"));
+        assert_eq!(session.port, 443);
+    }
+
+    #[test]
+    fn test_jps_default_port() {
+        // Hostname
+        let session = Session::new(
+            String::from("test.jps.com"),
+            None,
+            String::from("test"),
+            String::from("test-password"),
+            false,
+        )
+        .unwrap();
+
+        assert!(session.server_address.starts_with("https://"));
+        assert_eq!(session.port, 8443);
+
+        let session = Session::new(
+            String::from("192.168.1.1"),
+            None,
+            String::from("test"),
+            String::from("test-password"),
+            false,
+        )
+        .unwrap();
+
+        assert!(session.server_address.starts_with("https://"));
+        assert_eq!(session.port, 8443);
+    }
+
+    #[test]
+    fn test_jps_specified_port() {
+        let session = Session::new(
+            String::from("test.jps.com"),
+            Some(2022),
+            String::from("test"),
+            String::from("test-password"),
+            false,
+        )
+        .unwrap();
+
+        assert!(session.server_address.starts_with("https://"));
+        assert_eq!(session.port, 2022);
+
+        let session = Session::new(
+            String::from("192.168.1.1"),
+            Some(2022),
+            String::from("test"),
+            String::from("test-password"),
+            false,
+        )
+        .unwrap();
+
+        assert!(session.server_address.starts_with("https://"));
+        assert_eq!(session.port, 2022);
+    }
+
+    #[test]
+    fn test_jps_insecure_default_port() {
+        let session = Session::new(
+            String::from("test.jps.com"),
+            None,
+            String::from("test"),
+            String::from("test-password"),
+            true,
+        )
+        .unwrap();
+
+        assert!(session.server_address.starts_with("http://"));
+        assert_eq!(session.port, 8080);
+
+        let session = Session::new(
+            String::from("192.168.1.1"),
+            None,
+            String::from("test"),
+            String::from("test-password"),
+            true,
+        )
+        .unwrap();
+
+        assert!(session.server_address.starts_with("http://"));
+        assert_eq!(session.port, 8080);
+    }
+
+    #[test]
+    fn test_jps_inline_port() {
+        let session = Session::new(
+            String::from("test.jps.com:2022"),
+            None,
+            String::from("test"),
+            String::from("test-password"),
+            false,
+        )
+        .unwrap();
+
+        assert!(session.server_address.starts_with("https://"));
+        assert_eq!(session.port, 2022);
+
+        let session = Session::new(
+            String::from("192.168.1.1:2022"),
+            None,
+            String::from("test"),
+            String::from("test-password"),
+            false,
+        )
+        .unwrap();
+
+        assert!(session.server_address.starts_with("https://"));
+        assert_eq!(session.port, 2022);
+    }
+
+    #[test]
+    fn test_jps_error_when_both_inline_and_port_flag_used() {
+        let session = Session::new(
+            String::from("test.jps.com:2022"),
+            Some(2022),
+            String::from("test"),
+            String::from("test-password"),
+            false,
+        );
+
+        assert!(session.is_err());
+    }
+
+    #[test]
+    fn test_jps_inline_proto() {
+        let session = Session::new(
+            String::from("https://test.jps.com"),
+            None,
+            String::from("test"),
+            String::from("test-password"),
+            false,
+        )
+        .unwrap();
+
+        assert!(session.server_address.starts_with("https://"));
+
+        let session = Session::new(
+            String::from("http://test.jps.com"),
+            None,
+            String::from("test"),
+            String::from("test-password"),
+            true,
+        )
+        .unwrap();
+
+        assert!(session.server_address.starts_with("http://"));
     }
 }
