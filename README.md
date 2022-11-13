@@ -3,10 +3,10 @@
 ## Table of Contents
 - [Purpose](#purpose)
 - [Usage](#usage)
-  - [Command: computer](#command:-computer)
-  - [Command: mobile](#command:-mobile)
-  - [Command: user](#command:-user)
-  - [Command: group](#command:-group)
+  - [Command: computer](#command-computer)
+  - [Command: mobile](#command-mobile)
+  - [Command: user](#command-user)
+  - [Command: group](#command-group)
     - [Group Subcommand: computer](#group-subcommand-computer)
     - [Group Subcommand: mobile](#group-subcommand-mobile)
     - [Group Subcommand: user](#group-subcommand-user)
@@ -54,7 +54,7 @@ Options:
   -V, --version                  Print version information
   ```
 
-##### Command: computer(command-computer)
+##### Command: computer
 ```
 Work with computer records
 
