@@ -1,11 +1,36 @@
 # Jamfrs
 
-## Purpose
-Jamfrs is a command line tool for querying the Jamf Pro server built using Rust.
-It can be used to quickly export computer, mobile device, or user records to XML
-or JSON. Beyond simple look-ups, it can be used to pipe along device information
-to other services. 
+## Table of Contents
+- [Purpose](#purpose)
+- [Usage](#usage)
+  - [Command: computer](#command:-computer)
+  - [Command: mobile](#command:-mobile)
+  - [Command: user](#command:-user)
+  - [Command: group](#command:-group)
+    - [Group Subcommand: computer](#group-subcommand-computer)
+    - [Group Subcommand: mobile](#group-subcommand-mobile)
+    - [Group Subcommand: user](#group-subcommand-user)
+- [Build](#build)
+- [License](#license)
 
+## Purpose
+Sometimes you just want to get some information from the JPS but the UI can be slow at times, especially when looking
+for several records at a time. Or maybe you want a quick and easy way to export data from the JPS into another script.
+
+Jamfrs is a command line tool for quickly querying the Jamf Pro server built using Rust. It can be used to lookup and 
+export data either as XML or JSON. 
+
+
+### Currently Jamfrs supports the following queries:
+| Entity   | Capabilities                                                                                 |
+|----------|----------------------------------------------------------------------------------------------|
+| Computer | - Delete (ID)<br/>- Show (ID)<br/>- Search* (ID, Name, UUID, Serial, MAC Address)<br/>- List |
+| Mobile Devices| - Delete (ID)<br/>- Show (ID)<br/>- Search* (ID, Name, UUID, Serial, MAC Address)<br/>- List |
+| Users | - Delete<br/>- Show<br/>- Search* (ID, Name, UUID, Serial, MAC Address)<br/>- List                                                               |
+| Groups (Smart & Static) | - Delete<br/>- Show<br/>- List                                                               |
+
+**Supports wildcards*
+ 
 ## Usage
 ```
 Usage: jamfrs [OPTIONS] --server <SERVER_ADDRESS> --user <USERNAME> --password <PASSWORD> <COMMAND>
@@ -14,6 +39,7 @@ Commands:
   computer  Work with computer records
   mobile    Work with mobile device records
   user      Work with users records
+  group     Work with smart & static groups
   help      Print this message or the help of the given subcommand(s)
 
 Options:
@@ -23,11 +49,12 @@ Options:
   -p, --password <PASSWORD>      Password used by API user
       --pretty                   Pretty print output
       --json                     Request JSON data instead of the default XML
+      --insecure                 Allow insecure traffic; Defaults to False. Useful with HTTP or untrusted SSL certificates
   -h, --help                     Print help information
   -V, --version                  Print version information
   ```
 
-##### Command: computer
+##### Command: computer(command-computer)
 ```
 Work with computer records
 
@@ -62,6 +89,53 @@ Commands:
   delete  Delete an existing user record
   show    Show an existing user record
   list    List all user records
+```
+
+##### Command: group
+```
+Work with smart & static groups
+
+Usage: jamfrs --server <SERVER_ADDRESS> --user <USERNAME> --password <PASSWORD> group <COMMAND>
+
+Commands:
+  computer  Work with computer groups
+  mobile    Work with mobile device groups
+  user      Work with user groups
+```
+##### Group Subcommand: computer
+```
+Work with computer groups
+
+Usage: jamfrs group computer <COMMAND>
+
+Commands:
+  delete  Delete an existing computer group
+  show    Show an existing computer group
+  list    List all computer groups
+```
+
+##### Group Subcommand: mobile
+```
+Work with mobile device groups
+
+Usage: jamfrs group mobile <COMMAND>
+
+Commands:
+  delete  Delete an existing mobile device group
+  show    Show an existing mobile device group
+  list    List all mobile device groups
+```
+
+##### Group Subcommand: user
+```
+Work with user groups
+
+Usage: jamfrs group user <COMMAND>
+
+Commands:
+  delete  Delete an existing user group
+  show    Show an existing user group
+  list    List all user groups
 ```
 
 ## Build
