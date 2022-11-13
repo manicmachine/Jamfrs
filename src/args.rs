@@ -28,6 +28,10 @@ pub struct JamfrsArgs {
     #[arg(long)]
     pub json: bool,
 
+    /// Allow insecure traffic; Defaults to False. Useful with HTTP or untrusted SSL certificates
+    #[arg(long)]
+    pub insecure: bool,
+
     #[command(subcommand)]
     pub entity_type: EntityType,
 }

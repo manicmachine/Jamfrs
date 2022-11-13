@@ -11,27 +11,19 @@ use clap::Parser;
 use reqwest::blocking::Client;
 use serde_json::Value;
 use std::io::stdout;
+use std::process::exit;
 use xmltree::{Element, EmitterConfig};
 
 fn main() {
-    let client = Client::new();
     let args = JamfrsArgs::parse();
+    let client = Client::builder().danger_accept_invalid_certs(args.insecure).build().unwrap();
     let mut jps_session = Session::new(
         args.server_address.clone(),
         args.port,
         args.username.clone(),
         args.password.clone(),
+        args.insecure
     );
-
-    // TODO: Has to be a better way; clean this up
-    // Check if user entered a protocol, and if so, remove it
-    jps_session.server_address = if jps_session.server_address.starts_with("http://") {
-        jps_session.server_address[7..].to_string()
-    } else if jps_session.server_address.starts_with("https://") {
-        jps_session.server_address[8..].to_string()
-    } else {
-        jps_session.server_address
-    };
 
     // Authenticate with the server and store the token
     let (_, auth_endpoint) = ApiEndpoints::TokenAuth(&jps_session.server_address).usage();
@@ -40,14 +32,25 @@ fn main() {
         .basic_auth(&jps_session.username, Some(&jps_session.password));
 
     jps_session.api_token = match res.send() {
-        Ok(res) => Some(res.json::<ApiToken>().unwrap()),
-        Err(err) => panic!(
-            "Error getting auth token from {}: {err}",
-            jps_session.server_address
-        ),
+        Ok(res) => {
+            if res.status().is_success() {
+                Some(res.json::<ApiToken>().unwrap())
+            } else {
+                eprintln!("Failed to retrieve auth token from {}. {}", jps_session.server_address, res.status());
+                None
+            }
+        },
+        Err(err) => {
+            eprintln!("Failed to retrieve auth token from {}: {}", jps_session.server_address, err);
+            None
+        }
     };
 
-    let (http_method, api_endpoint) = ApiEndpoints::get_endpoint_for_args(&args).usage();
+    if jps_session.api_token.is_none() {
+        exit(1);
+    }
+
+    let (http_method, api_endpoint) = ApiEndpoints::get_endpoint(&args.entity_type, &jps_session.server_address).usage();
 
     // TODO: Clean this up
     let res = if http_method == reqwest::Method::GET {
