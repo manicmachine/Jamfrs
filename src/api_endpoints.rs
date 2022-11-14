@@ -1,6 +1,7 @@
 use crate::args::{
-    ComputerGroupCommand, ComputerSubcommand, EntityType, GroupSubcommand, MobileGroupCommand,
-    MobileSubcommand, UserGroupCommand, UserSubcommand,
+    AdvSearchSubcommand, ComputerAdvSearchCommand, ComputerGroupCommand, ComputerSubcommand,
+    EntityType, GroupSubcommand, MobileAdvSearchCommand, MobileGroupCommand, MobileSubcommand,
+    UserAdvSearchCommand, UserGroupCommand, UserSubcommand,
 };
 use reqwest::Method;
 
@@ -73,6 +74,34 @@ pub enum ApiEndpoints<'a> {
         id: u32,
     },
     GroupUserList(&'a String),
+    // Advanced searches
+    AdvSearchComputerDelete {
+        host: &'a String,
+        id: u32,
+    },
+    AdvSearchComputerShow {
+        host: &'a String,
+        id: u32,
+    },
+    AdvSearchComputerList(&'a String),
+    AdvSearchMobileDelete {
+        host: &'a String,
+        id: u32,
+    },
+    AdvSearchMobileShow {
+        host: &'a String,
+        id: u32,
+    },
+    AdvSearchMobileList(&'a String),
+    AdvSearchUserDelete {
+        host: &'a String,
+        id: u32,
+    },
+    AdvSearchUserShow {
+        host: &'a String,
+        id: u32,
+    },
+    AdvSearchUserList(&'a String),
 }
 
 impl<'a> ApiEndpoints<'a> {
@@ -149,6 +178,42 @@ impl<'a> ApiEndpoints<'a> {
             ApiEndpoints::GroupUserList(host) => {
                 (Method::GET, format!("{host}/JSSResource/usergroups"))
             }
+            ApiEndpoints::AdvSearchComputerDelete { host, id } => (
+                Method::DELETE,
+                format!("{host}/JSSResource/advancedcomputersearches/id/{id}"),
+            ),
+            ApiEndpoints::AdvSearchComputerShow { host, id } => (
+                Method::GET,
+                format!("{host}/JSSResource/advancedcomputersearches/id/{id}"),
+            ),
+            ApiEndpoints::AdvSearchComputerList(host) => (
+                Method::GET,
+                format!("{host}/JSSResource/advancedcomputersearches"),
+            ),
+            ApiEndpoints::AdvSearchMobileDelete { host, id } => (
+                Method::DELETE,
+                format!("{host}/JSSResource/advancedmobiledevicesearches/id/{id}"),
+            ),
+            ApiEndpoints::AdvSearchMobileShow { host, id } => (
+                Method::GET,
+                format!("{host}/JSSResource/advancedmobiledevicesearches/id/{id}"),
+            ),
+            ApiEndpoints::AdvSearchMobileList(host) => (
+                Method::GET,
+                format!("{host}/JSSResource/advancedmobiledevicesearches"),
+            ),
+            ApiEndpoints::AdvSearchUserDelete { host, id } => (
+                Method::DELETE,
+                format!("{host}/JSSResource/advancedusersearches/id/{id}"),
+            ),
+            ApiEndpoints::AdvSearchUserShow { host, id } => (
+                Method::GET,
+                format!("{host}/JSSResource/advancedusersearches/id/{id}"),
+            ),
+            ApiEndpoints::AdvSearchUserList(host) => (
+                Method::GET,
+                format!("{host}/JSSResource/advancedusersearches"),
+            ),
         }
     }
 
@@ -228,6 +293,55 @@ impl<'a> ApiEndpoints<'a> {
                         id: *id,
                     },
                     UserGroupCommand::List => ApiEndpoints::GroupUserList(server_address),
+                },
+            },
+            EntityType::AdvSearch(command) => match &command.adv_search_command {
+                AdvSearchSubcommand::Computer(adv_search_subcommand) => {
+                    match &adv_search_subcommand {
+                        ComputerAdvSearchCommand::Delete { id } => {
+                            ApiEndpoints::AdvSearchComputerDelete {
+                                host: server_address,
+                                id: *id,
+                            }
+                        }
+                        ComputerAdvSearchCommand::Show { id } => {
+                            ApiEndpoints::AdvSearchComputerShow {
+                                host: server_address,
+                                id: *id,
+                            }
+                        }
+                        ComputerAdvSearchCommand::List => {
+                            ApiEndpoints::AdvSearchComputerList(server_address)
+                        }
+                    }
+                }
+                AdvSearchSubcommand::Mobile(adv_search_subcommand) => {
+                    match &adv_search_subcommand {
+                        MobileAdvSearchCommand::Delete { id } => {
+                            ApiEndpoints::AdvSearchMobileDelete {
+                                host: server_address,
+                                id: *id,
+                            }
+                        }
+                        MobileAdvSearchCommand::Show { id } => ApiEndpoints::AdvSearchMobileShow {
+                            host: server_address,
+                            id: *id,
+                        },
+                        MobileAdvSearchCommand::List => {
+                            ApiEndpoints::AdvSearchMobileList(server_address)
+                        }
+                    }
+                }
+                AdvSearchSubcommand::User(adv_search_subcommand) => match &adv_search_subcommand {
+                    UserAdvSearchCommand::Delete { id } => ApiEndpoints::AdvSearchUserDelete {
+                        host: server_address,
+                        id: *id,
+                    },
+                    UserAdvSearchCommand::Show { id } => ApiEndpoints::AdvSearchUserShow {
+                        host: server_address,
+                        id: *id,
+                    },
+                    UserAdvSearchCommand::List => ApiEndpoints::AdvSearchUserList(server_address),
                 },
             },
         }

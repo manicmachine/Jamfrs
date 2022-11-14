@@ -46,6 +46,8 @@ pub enum EntityType {
     User(UserCommand),
     /// Work with smart & static groups
     Group(GroupCommand),
+    /// Work with advanced searches
+    AdvSearch(AdvSearchCommand),
 }
 
 #[derive(Debug, Args)]
@@ -148,5 +150,54 @@ pub enum UserGroupCommand {
     /// Show an existing user group
     Show { id: u32 },
     /// List all user groups
+    List,
+}
+
+#[derive(Debug, Parser)]
+pub struct AdvSearchCommand {
+    #[clap(subcommand)]
+    pub adv_search_command: AdvSearchSubcommand,
+}
+
+#[derive(Debug, Subcommand)]
+pub enum AdvSearchSubcommand {
+    #[clap(subcommand)]
+    /// Work with computer advanced searches
+    Computer(ComputerAdvSearchCommand),
+    #[clap(subcommand)]
+    /// Work with mobile device advanced searches
+    Mobile(MobileAdvSearchCommand),
+    #[clap(subcommand)]
+    /// Work with user advanced searches
+    User(UserAdvSearchCommand),
+}
+
+#[derive(Debug, Subcommand)]
+pub enum ComputerAdvSearchCommand {
+    /// Delete an existing computer advanced search
+    Delete { id: u32 },
+    /// Show an existing computer advanced search
+    Show { id: u32 },
+    /// List all computer advanced searches
+    List,
+}
+
+#[derive(Debug, Subcommand)]
+pub enum MobileAdvSearchCommand {
+    /// Delete an existing mobile device advanced search
+    Delete { id: u32 },
+    /// Show an existing mobile device advanced search
+    Show { id: u32 },
+    /// List all mobile device advanced searches
+    List,
+}
+
+#[derive(Debug, Subcommand)]
+pub enum UserAdvSearchCommand {
+    /// Delete an existing user advanced search
+    Delete { id: u32 },
+    /// Show an existing user advanced search
+    Show { id: u32 },
+    /// List all user advanced searches
     List,
 }

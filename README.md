@@ -10,6 +10,10 @@
     - [Group Subcommand: computer](#group-subcommand-computer)
     - [Group Subcommand: mobile](#group-subcommand-mobile)
     - [Group Subcommand: user](#group-subcommand-user)
+  - [Command: adv-search](#command-adv-search)
+    - [Advanced Search Subcommand: computer](#advanced-search-subcommand-computer)
+    - [Advanced Search Subcommand: mobile](#advanced-search-subcommand-mobile)
+    - [Advanced Search Subcommand: user](#advanced-search-subcommand-user)
 - [Build](#build)
 - [License](#license)
 
@@ -28,6 +32,7 @@ export data either as XML or JSON.
 | Mobile Devices| - Delete (ID)<br/>- Show (ID)<br/>- Search* (ID, Name, UUID, Serial, MAC Address)<br/>- List |
 | Users | - Delete<br/>- Show<br/>- Search* (ID, Name, UUID, Serial, MAC Address)<br/>- List                                                               |
 | Groups (Smart & Static) | - Delete<br/>- Show<br/>- List                                                               |
+| Advanced Search| - Delete<br/>- Show<br/>- List|
 
 **Supports wildcards*
  
@@ -36,11 +41,12 @@ export data either as XML or JSON.
 Usage: jamfrs [OPTIONS] --server <SERVER_ADDRESS> --user <USERNAME> --password <PASSWORD> <COMMAND>
 
 Commands:
-  computer  Work with computer records
-  mobile    Work with mobile device records
-  user      Work with users records
-  group     Work with smart & static groups
-  help      Print this message or the help of the given subcommand(s)
+  computer    Work with computer records
+  mobile      Work with mobile device records
+  user        Work with users records
+  group       Work with smart & static groups
+  adv-search  Work with advanced searches
+  help        Print this message or the help of the given subcommand(s)
 
 Options:
   -s, --server <SERVER_ADDRESS>  Hostname or IP address for Jamf Pro server
@@ -136,6 +142,54 @@ Commands:
   delete  Delete an existing user group
   show    Show an existing user group
   list    List all user groups
+```
+
+##### Command: adv-search
+```
+Work with advanced searches
+
+Usage: jamfrs --server <SERVER_ADDRESS> --user <USERNAME> --password <PASSWORD> adv-search <COMMAND>
+
+Commands:
+  computer  Work with computer advanced searches
+  mobile    Work with mobile device advanced searches
+  user      Work with user advanced searches
+```
+
+##### Advanced Search Subcommand: computer
+```
+Work with computer advanced searches
+
+Usage: jamfrs adv-search computer <COMMAND>
+
+Commands:
+  delete  Delete an existing computer advanced search
+  show    Show an existing computer advanced search
+  list    List all computer advanced searches
+```
+
+##### Advanced Search Subcommand: mobile
+```
+Work with mobile device advanced searches
+
+Usage: jamfrs adv-search mobile <COMMAND>
+
+Commands:
+  delete  Delete an existing mobile device advanced search
+  show    Show an existing mobile device advanced search
+  list    List all mobile device advanced searches
+```
+
+##### Advanced Search Subcommand: user
+```
+Work with user advanced searches
+
+Usage: jamfrs adv-search user <COMMAND>
+
+Commands:
+  delete  Delete an existing user advanced search
+  show    Show an existing user advanced search
+  list    List all user advanced searches
 ```
 
 ## Build
