@@ -59,9 +59,9 @@ pub struct ComputerCommand {
 #[derive(Debug, Subcommand)]
 pub enum ComputerSubcommand {
     /// Delete an existing computer record
-    Delete { id: u32 },
+    Delete(Id),
     /// Show an existing computer record
-    Show { id: u32 },
+    Show(Id),
     /// Search for existing computer records by name, MAC address, username, etc; Accepts * wildcard
     /// Note: Wildcard searches must be wrapped in quotes or escaped to prevent shell expansion
     Search { search_query: String },
@@ -78,9 +78,9 @@ pub struct MobileCommand {
 #[derive(Debug, Subcommand)]
 pub enum MobileSubcommand {
     /// Delete an existing mobile device record
-    Delete { id: u32 },
+    Delete(Id),
     /// Show an existing mobile device record
-    Show { id: u32 },
+    Show(Id),
     /// Search for existing mobile device records by name, MAC address, username, etc. Accepts * wildcard
     //  Note: Wildcard searches must be wrapped in quotes or escaped to prevent shell expansion
     Search { search_query: String },
@@ -97,9 +97,9 @@ pub struct UserCommand {
 #[derive(Debug, Subcommand)]
 pub enum UserSubcommand {
     /// Delete an existing user record
-    Delete { id: u32 },
+    Delete(Id),
     /// Show an existing user record
-    Show { id: u32 },
+    Show(Id),
     /// List all user records
     List,
 }
@@ -126,9 +126,9 @@ pub enum GroupSubcommand {
 #[derive(Debug, Subcommand)]
 pub enum ComputerGroupCommand {
     /// Delete an existing computer group
-    Delete { id: u32 },
+    Delete(Id),
     /// Show an existing computer group
-    Show { id: u32 },
+    Show(Id),
     /// List all computer groups
     List,
 }
@@ -136,9 +136,9 @@ pub enum ComputerGroupCommand {
 #[derive(Debug, Subcommand)]
 pub enum MobileGroupCommand {
     /// Delete an existing mobile device group
-    Delete { id: u32 },
+    Delete(Id),
     /// Show an existing mobile device group
-    Show { id: u32 },
+    Show(Id),
     /// List all mobile device groups
     List,
 }
@@ -146,9 +146,9 @@ pub enum MobileGroupCommand {
 #[derive(Debug, Subcommand)]
 pub enum UserGroupCommand {
     /// Delete an existing user group
-    Delete { id: u32 },
+    Delete(Id),
     /// Show an existing user group
-    Show { id: u32 },
+    Show(Id),
     /// List all user groups
     List,
 }
@@ -175,9 +175,9 @@ pub enum AdvSearchSubcommand {
 #[derive(Debug, Subcommand)]
 pub enum ComputerAdvSearchCommand {
     /// Delete an existing computer advanced search
-    Delete { id: u32 },
+    Delete(Id),
     /// Show an existing computer advanced search
-    Show { id: u32 },
+    Show(Id),
     /// List all computer advanced searches
     List,
 }
@@ -185,9 +185,9 @@ pub enum ComputerAdvSearchCommand {
 #[derive(Debug, Subcommand)]
 pub enum MobileAdvSearchCommand {
     /// Delete an existing mobile device advanced search
-    Delete { id: u32 },
+    Delete(Id),
     /// Show an existing mobile device advanced search
-    Show { id: u32 },
+    Show(Id),
     /// List all mobile device advanced searches
     List,
 }
@@ -195,9 +195,15 @@ pub enum MobileAdvSearchCommand {
 #[derive(Debug, Subcommand)]
 pub enum UserAdvSearchCommand {
     /// Delete an existing user advanced search
-    Delete { id: u32 },
+    Delete(Id),
     /// Show an existing user advanced search
-    Show { id: u32 },
+    Show(Id),
     /// List all user advanced searches
     List,
+}
+
+#[derive(Debug, Args)]
+pub struct Id {
+    #[clap(required = true, value_delimiter = ',')]
+    pub id: Vec<u32>,
 }

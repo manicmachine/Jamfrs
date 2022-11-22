@@ -5,345 +5,253 @@ use crate::args::{
 };
 use reqwest::Method;
 
-pub enum ApiEndpoints<'a> {
+pub enum ApiEndpoints {
     // Util
-    TokenAuth(&'a String),
+    TokenAuth,
     // Computer
-    ComputerDelete {
-        host: &'a String,
-        id: u32,
-    },
-    ComputerShow {
-        host: &'a String,
-        id: u32,
-    },
-    ComputerSearch {
-        host: &'a String,
-        query_string: String,
-    },
-    ComputerList(&'a String),
+    ComputerDelete,
+    ComputerShow,
+    ComputerSearch,
+    ComputerList,
     // Mobile Device
-    MobileDelete {
-        host: &'a String,
-        id: u32,
-    },
-    MobileShow {
-        host: &'a String,
-        id: u32,
-    },
-    MobileSearch {
-        host: &'a String,
-        query_string: String,
-    },
-    MobileList(&'a String),
+    MobileDelete,
+    MobileShow,
+    MobileSearch,
+    MobileList,
     // User
-    UserDelete {
-        host: &'a String,
-        id: u32,
-    },
-    UserShow {
-        host: &'a String,
-        id: u32,
-    },
-    UserList(&'a String),
+    UserDelete,
+    UserShow,
+    UserList,
     // Groups
-    GroupComputerDelete {
-        host: &'a String,
-        id: u32,
-    },
-    GroupComputerShow {
-        host: &'a String,
-        id: u32,
-    },
-    GroupComputerList(&'a String),
-    GroupMobileDelete {
-        host: &'a String,
-        id: u32,
-    },
-    GroupMobileShow {
-        host: &'a String,
-        id: u32,
-    },
-    GroupMobileList(&'a String),
-    GroupUserDelete {
-        host: &'a String,
-        id: u32,
-    },
-    GroupUserShow {
-        host: &'a String,
-        id: u32,
-    },
-    GroupUserList(&'a String),
+    GroupComputerDelete,
+    GroupComputerShow,
+    GroupComputerList,
+    GroupMobileDelete,
+    GroupMobileShow,
+    GroupMobileList,
+    GroupUserDelete,
+    GroupUserShow,
+    GroupUserList,
     // Advanced searches
-    AdvSearchComputerDelete {
-        host: &'a String,
-        id: u32,
-    },
-    AdvSearchComputerShow {
-        host: &'a String,
-        id: u32,
-    },
-    AdvSearchComputerList(&'a String),
-    AdvSearchMobileDelete {
-        host: &'a String,
-        id: u32,
-    },
-    AdvSearchMobileShow {
-        host: &'a String,
-        id: u32,
-    },
-    AdvSearchMobileList(&'a String),
-    AdvSearchUserDelete {
-        host: &'a String,
-        id: u32,
-    },
-    AdvSearchUserShow {
-        host: &'a String,
-        id: u32,
-    },
-    AdvSearchUserList(&'a String),
+    AdvSearchComputerDelete,
+    AdvSearchComputerShow,
+    AdvSearchComputerList,
+    AdvSearchMobileDelete,
+    AdvSearchMobileShow,
+    AdvSearchMobileList,
+    AdvSearchUserDelete,
+    AdvSearchUserShow,
+    AdvSearchUserList,
 }
 
-impl<'a> ApiEndpoints<'a> {
-    pub fn usage(&self) -> (reqwest::Method, String) {
-        match self {
-            ApiEndpoints::TokenAuth(host) => (Method::POST, format!("{host}/api/auth/tokens")),
-            ApiEndpoints::ComputerDelete { host, id } => (
-                Method::DELETE,
-                format!("{host}/JSSResource/computers/id/{id}"),
-            ),
-            ApiEndpoints::ComputerShow { host, id } => {
-                (Method::GET, format!("{host}/JSSResource/computers/id/{id}"))
-            }
-            ApiEndpoints::ComputerSearch { host, query_string } => (
-                Method::GET,
-                format!("{host}/JSSResource/computers/match/{query_string}"),
-            ),
-            ApiEndpoints::ComputerList(host) => {
-                (Method::GET, format!("{host}/JSSResource/computers"))
-            }
-            ApiEndpoints::MobileDelete { host, id } => (
-                Method::DELETE,
-                format!("{host}/JSSResource/mobiledevices/id/{id}"),
-            ),
-            ApiEndpoints::MobileShow { host, id } => (
-                Method::GET,
-                format!("{host}/JSSResource/mobiledevices/id/{id}"),
-            ),
-            ApiEndpoints::MobileSearch { host, query_string } => (
-                Method::GET,
-                format!("{host}/JSSResource/mobiledevices/match/{query_string}"),
-            ),
-            ApiEndpoints::MobileList(host) => {
-                (Method::GET, format!("{host}/JSSResource/mobiledevices"))
-            }
-            ApiEndpoints::UserDelete { host, id } => {
-                (Method::DELETE, format!("{host}/JSSResource/users/id/{id}"))
-            }
-            ApiEndpoints::UserShow { host, id } => {
-                (Method::GET, format!("{host}/JSSResource/users/id/{id}"))
-            }
-            ApiEndpoints::UserList(host) => (Method::GET, format!("{host}/JSSResource/users")),
-            ApiEndpoints::GroupComputerDelete { host, id } => (
-                Method::DELETE,
-                format!("{host}/JSSResource/computergroups/id/{id}"),
-            ),
-            ApiEndpoints::GroupComputerShow { host, id } => (
-                Method::GET,
-                format!("{host}/JSSResource/computergroups/id/{id}"),
-            ),
-            ApiEndpoints::GroupComputerList(host) => {
-                (Method::GET, format!("{host}/JSSResource/computergroups"))
-            }
-            ApiEndpoints::GroupMobileDelete { host, id } => (
-                Method::DELETE,
-                format!("{host}/JSSResource/mobiledevicegroups/id/{id}"),
-            ),
-            ApiEndpoints::GroupMobileShow { host, id } => (
-                Method::GET,
-                format!("{host}/JSSResource/mobiledevicegroups/id/{id}"),
-            ),
-            ApiEndpoints::GroupMobileList(host) => (
-                Method::GET,
-                format!("{host}/JSSResource/mobiledevicegroups"),
-            ),
-            ApiEndpoints::GroupUserDelete { host, id } => (
-                Method::DELETE,
-                format!("{host}/JSSResource/userroups/id/{id}"),
-            ),
-            ApiEndpoints::GroupUserShow { host, id } => (
-                Method::GET,
-                format!("{host}/JSSResource/usergroups/id/{id}"),
-            ),
-            ApiEndpoints::GroupUserList(host) => {
-                (Method::GET, format!("{host}/JSSResource/usergroups"))
-            }
-            ApiEndpoints::AdvSearchComputerDelete { host, id } => (
-                Method::DELETE,
-                format!("{host}/JSSResource/advancedcomputersearches/id/{id}"),
-            ),
-            ApiEndpoints::AdvSearchComputerShow { host, id } => (
-                Method::GET,
-                format!("{host}/JSSResource/advancedcomputersearches/id/{id}"),
-            ),
-            ApiEndpoints::AdvSearchComputerList(host) => (
-                Method::GET,
-                format!("{host}/JSSResource/advancedcomputersearches"),
-            ),
-            ApiEndpoints::AdvSearchMobileDelete { host, id } => (
-                Method::DELETE,
-                format!("{host}/JSSResource/advancedmobiledevicesearches/id/{id}"),
-            ),
-            ApiEndpoints::AdvSearchMobileShow { host, id } => (
-                Method::GET,
-                format!("{host}/JSSResource/advancedmobiledevicesearches/id/{id}"),
-            ),
-            ApiEndpoints::AdvSearchMobileList(host) => (
-                Method::GET,
-                format!("{host}/JSSResource/advancedmobiledevicesearches"),
-            ),
-            ApiEndpoints::AdvSearchUserDelete { host, id } => (
-                Method::DELETE,
-                format!("{host}/JSSResource/advancedusersearches/id/{id}"),
-            ),
-            ApiEndpoints::AdvSearchUserShow { host, id } => (
-                Method::GET,
-                format!("{host}/JSSResource/advancedusersearches/id/{id}"),
-            ),
-            ApiEndpoints::AdvSearchUserList(host) => (
-                Method::GET,
-                format!("{host}/JSSResource/advancedusersearches"),
-            ),
+impl ApiEndpoints {
+    pub fn usage(&self) -> ApiEndpointDetails {
+        match &self {
+            ApiEndpoints::TokenAuth => ApiEndpointDetails {
+                method: Method::POST,
+                url: "/api/auth/tokens",
+            },
+            ApiEndpoints::ComputerDelete => ApiEndpointDetails {
+                method: Method::DELETE,
+                url: "/JSSResource/computers/id/{val}",
+            },
+            ApiEndpoints::ComputerShow => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/computers/id/{val}",
+            },
+            ApiEndpoints::ComputerSearch => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/computers/match/{val}",
+            },
+            ApiEndpoints::ComputerList => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/computers",
+            },
+            ApiEndpoints::MobileDelete => ApiEndpointDetails {
+                method: Method::DELETE,
+                url: "/JSSResource/mobiledevices/id/{val}",
+            },
+            ApiEndpoints::MobileShow => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/mobiledevices/id/{val}",
+            },
+            ApiEndpoints::MobileSearch => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/mobiledevices/match/{val}",
+            },
+            ApiEndpoints::MobileList => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/mobiledevices",
+            },
+            ApiEndpoints::UserDelete => ApiEndpointDetails {
+                method: Method::DELETE,
+                url: "/JSSResource/users/id/{val}",
+            },
+            ApiEndpoints::UserShow => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/users/id/{val}",
+            },
+            ApiEndpoints::UserList => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/users",
+            },
+            ApiEndpoints::GroupComputerDelete => ApiEndpointDetails {
+                method: Method::DELETE,
+                url: "/JSSResource/computergroups/id/{val}",
+            },
+            ApiEndpoints::GroupComputerShow => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/computergroups/id/{val}",
+            },
+            ApiEndpoints::GroupComputerList => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/computergroups",
+            },
+            ApiEndpoints::GroupMobileDelete => ApiEndpointDetails {
+                method: Method::DELETE,
+                url: "/JSSResource/mobiledevicegroups/id/{val}",
+            },
+            ApiEndpoints::GroupMobileShow => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/mobiledevicegroups/id/{val}",
+            },
+            ApiEndpoints::GroupMobileList => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/mobiledevicegroups",
+            },
+            ApiEndpoints::GroupUserDelete => ApiEndpointDetails {
+                method: Method::DELETE,
+                url: "/JSSResource/userroups/id/{val}",
+            },
+            ApiEndpoints::GroupUserShow => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/usergroups/id/{val}",
+            },
+            ApiEndpoints::GroupUserList => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/usergroups",
+            },
+            ApiEndpoints::AdvSearchComputerDelete => ApiEndpointDetails {
+                method: Method::DELETE,
+                url: "/JSSResource/advancedcomputersearches/id/{val}",
+            },
+            ApiEndpoints::AdvSearchComputerShow => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/advancedcomputersearches/id/{val}",
+            },
+            ApiEndpoints::AdvSearchComputerList => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/advancedcomputersearches",
+            },
+            ApiEndpoints::AdvSearchMobileDelete => ApiEndpointDetails {
+                method: Method::DELETE,
+                url: "/JSSResource/advancedmobiledevicesearches/id/{val}",
+            },
+            ApiEndpoints::AdvSearchMobileShow => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/advancedmobiledevicesearches/id/{val}",
+            },
+            ApiEndpoints::AdvSearchMobileList => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/advancedmobiledevicesearches",
+            },
+            ApiEndpoints::AdvSearchUserDelete => ApiEndpointDetails {
+                method: Method::DELETE,
+                url: "/JSSResource/advancedusersearches/id/{val}",
+            },
+            ApiEndpoints::AdvSearchUserShow => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/advancedusersearches/id/{val}",
+            },
+            ApiEndpoints::AdvSearchUserList => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/advancedusersearches",
+            },
         }
     }
 
-    pub fn get_endpoint(entity_type: &EntityType, server_address: &'a String) -> Self {
-        match &entity_type {
+    pub fn get_api_details(entity_type: &EntityType) -> ApiDetails {
+        let (args, endpoint) = match &entity_type {
             EntityType::Computer(command) => match &command.subcommand {
-                ComputerSubcommand::Delete { id } => ApiEndpoints::ComputerDelete {
-                    host: server_address,
-                    id: *id,
-                },
-                ComputerSubcommand::Show { id } => ApiEndpoints::ComputerShow {
-                    host: server_address,
-                    id: *id,
-                },
-                ComputerSubcommand::Search { search_query } => ApiEndpoints::ComputerSearch {
-                    host: server_address,
-                    query_string: search_query.clone(),
-                },
-                ComputerSubcommand::List => ApiEndpoints::ComputerList(server_address),
+                ComputerSubcommand::Delete(id) =>  (Args::Ids(&id.id), ApiEndpoints::ComputerDelete),
+                ComputerSubcommand::Show(id) => (Args::Ids(&id.id), ApiEndpoints::ComputerShow),
+                ComputerSubcommand::Search {
+                    search_query,
+                } => (Args::String(search_query), ApiEndpoints::ComputerSearch),
+                ComputerSubcommand::List => (Args::None, ApiEndpoints::ComputerList),
             },
             EntityType::Mobile(command) => match &command.subcommand {
-                MobileSubcommand::Delete { id } => ApiEndpoints::MobileDelete {
-                    host: server_address,
-                    id: *id,
-                },
-                MobileSubcommand::Show { id } => ApiEndpoints::MobileShow {
-                    host: server_address,
-                    id: *id,
-                },
-                MobileSubcommand::Search { search_query } => ApiEndpoints::MobileSearch {
-                    host: server_address,
-                    query_string: search_query.clone(),
-                },
-                MobileSubcommand::List => ApiEndpoints::MobileList(server_address),
+                MobileSubcommand::Delete(id) => (Args::Ids(&id.id), ApiEndpoints::MobileDelete),
+                MobileSubcommand::Show(id) => (Args::Ids(&id.id), ApiEndpoints::MobileShow),
+                MobileSubcommand::Search {
+                    search_query,
+                } => (Args::String(search_query), ApiEndpoints::MobileSearch),
+                MobileSubcommand::List => (Args::None, ApiEndpoints::MobileList),
             },
             EntityType::User(command) => match &command.subcommand {
-                UserSubcommand::Delete { id } => ApiEndpoints::UserDelete {
-                    host: server_address,
-                    id: *id,
-                },
-                UserSubcommand::Show { id } => ApiEndpoints::UserShow {
-                    host: server_address,
-                    id: *id,
-                },
-                UserSubcommand::List => ApiEndpoints::UserList(server_address),
+                UserSubcommand::Delete(id) => (Args::Ids(&id.id), ApiEndpoints::UserDelete),
+                UserSubcommand::Show(id) => (Args::Ids(&id.id), ApiEndpoints::UserShow),
+                UserSubcommand::List => (Args::None , ApiEndpoints::UserList),
             },
             EntityType::Group(command) => match &command.group_command {
                 GroupSubcommand::Computer(group_subcommand) => match &group_subcommand {
-                    ComputerGroupCommand::Delete { id } => ApiEndpoints::GroupComputerDelete {
-                        host: server_address,
-                        id: *id,
-                    },
-                    ComputerGroupCommand::Show { id } => ApiEndpoints::GroupComputerShow {
-                        host: server_address,
-                        id: *id,
-                    },
-                    ComputerGroupCommand::List => ApiEndpoints::GroupComputerList(server_address),
+                    ComputerGroupCommand::Delete(id) => (Args::Ids(&id.id), ApiEndpoints::GroupComputerDelete),
+                    ComputerGroupCommand::Show(id) => (Args::Ids(&id.id), ApiEndpoints::GroupComputerShow),
+                    ComputerGroupCommand::List => (Args::None, ApiEndpoints::GroupComputerList),
                 },
                 GroupSubcommand::Mobile(group_subcommand) => match &group_subcommand {
-                    MobileGroupCommand::Delete { id } => ApiEndpoints::GroupMobileDelete {
-                        host: server_address,
-                        id: *id,
-                    },
-                    MobileGroupCommand::Show { id } => ApiEndpoints::GroupMobileShow {
-                        host: server_address,
-                        id: *id,
-                    },
-                    MobileGroupCommand::List => ApiEndpoints::GroupMobileList(server_address),
+                    MobileGroupCommand::Delete(id) => (Args::Ids(&id.id), ApiEndpoints::GroupMobileDelete),
+                    MobileGroupCommand::Show(id) => (Args::Ids(&id.id), ApiEndpoints::GroupMobileShow),
+                    MobileGroupCommand::List => (Args::None, ApiEndpoints::GroupMobileList),
                 },
                 GroupSubcommand::User(group_subcommand) => match &group_subcommand {
-                    UserGroupCommand::Delete { id } => ApiEndpoints::GroupUserDelete {
-                        host: server_address,
-                        id: *id,
-                    },
-                    UserGroupCommand::Show { id } => ApiEndpoints::GroupUserShow {
-                        host: server_address,
-                        id: *id,
-                    },
-                    UserGroupCommand::List => ApiEndpoints::GroupUserList(server_address),
+                    UserGroupCommand::Delete(id) => (Args::Ids(&id.id), ApiEndpoints::GroupUserDelete),
+                    UserGroupCommand::Show(id) => (Args::Ids(&id.id), ApiEndpoints::GroupUserShow),
+                    UserGroupCommand::List => (Args::None, ApiEndpoints::GroupUserList),
                 },
             },
             EntityType::AdvSearch(command) => match &command.adv_search_command {
                 AdvSearchSubcommand::Computer(adv_search_subcommand) => {
                     match &adv_search_subcommand {
-                        ComputerAdvSearchCommand::Delete { id } => {
-                            ApiEndpoints::AdvSearchComputerDelete {
-                                host: server_address,
-                                id: *id,
-                            }
-                        }
-                        ComputerAdvSearchCommand::Show { id } => {
-                            ApiEndpoints::AdvSearchComputerShow {
-                                host: server_address,
-                                id: *id,
-                            }
-                        }
-                        ComputerAdvSearchCommand::List => {
-                            ApiEndpoints::AdvSearchComputerList(server_address)
-                        }
+                        ComputerAdvSearchCommand::Delete(id) => (Args::Ids(&id.id), ApiEndpoints::AdvSearchComputerDelete),
+                        ComputerAdvSearchCommand::Show(id) => (Args::Ids(&id.id), ApiEndpoints::AdvSearchComputerShow),
+                        ComputerAdvSearchCommand::List => (Args::None, ApiEndpoints::AdvSearchComputerList),
                     }
                 }
                 AdvSearchSubcommand::Mobile(adv_search_subcommand) => {
                     match &adv_search_subcommand {
-                        MobileAdvSearchCommand::Delete { id } => {
-                            ApiEndpoints::AdvSearchMobileDelete {
-                                host: server_address,
-                                id: *id,
-                            }
-                        }
-                        MobileAdvSearchCommand::Show { id } => ApiEndpoints::AdvSearchMobileShow {
-                            host: server_address,
-                            id: *id,
-                        },
-                        MobileAdvSearchCommand::List => {
-                            ApiEndpoints::AdvSearchMobileList(server_address)
-                        }
+                        MobileAdvSearchCommand::Delete(id) => (Args::Ids(&id.id), ApiEndpoints::AdvSearchMobileDelete),
+                        MobileAdvSearchCommand::Show(id) => (Args::Ids(&id.id), ApiEndpoints::AdvSearchMobileShow),
+                        MobileAdvSearchCommand::List => (Args::None, ApiEndpoints::AdvSearchMobileList),
                     }
                 }
                 AdvSearchSubcommand::User(adv_search_subcommand) => match &adv_search_subcommand {
-                    UserAdvSearchCommand::Delete { id } => ApiEndpoints::AdvSearchUserDelete {
-                        host: server_address,
-                        id: *id,
-                    },
-                    UserAdvSearchCommand::Show { id } => ApiEndpoints::AdvSearchUserShow {
-                        host: server_address,
-                        id: *id,
-                    },
-                    UserAdvSearchCommand::List => ApiEndpoints::AdvSearchUserList(server_address),
+                    UserAdvSearchCommand::Delete(id) => (Args::Ids(&id.id), ApiEndpoints::AdvSearchUserDelete),
+                    UserAdvSearchCommand::Show(id) => (Args::Ids(&id.id), ApiEndpoints::AdvSearchUserShow),
+                    UserAdvSearchCommand::List => (Args::None, ApiEndpoints::AdvSearchUserList),
                 },
             },
+        };
+
+        ApiDetails {
+            args,
+            endpoint: endpoint.usage()
         }
     }
+}
+
+pub enum Args<'a> {
+    None,
+    String(&'a String),
+    Ids(&'a Vec<u32>)
+}
+
+pub struct ApiDetails<'a> {
+    pub args: Args<'a>,
+    pub endpoint: ApiEndpointDetails
+}
+
+pub struct ApiEndpointDetails {
+    pub method: Method,
+    pub url: &'static str,
 }
