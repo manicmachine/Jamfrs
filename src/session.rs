@@ -1,5 +1,6 @@
 use crate::api_token::ApiToken;
 use regex::Regex;
+use Result::Err;
 
 #[derive(Debug)]
 pub struct Session {
@@ -73,6 +74,17 @@ impl Session {
             insecure,
             api_token: None,
         })
+    }
+
+    pub fn create_auth_token(&mut self, token_string: String) -> Result<(), String> {
+        self.api_token = match serde_json::from_str(token_string.as_str()) {
+            Ok(token) => Some(token),
+            Err(err) => {
+                return Err(err.to_string());
+            }
+        };
+
+        Result::Ok(())
     }
 }
 

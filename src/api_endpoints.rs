@@ -173,39 +173,49 @@ impl ApiEndpoints {
     pub fn get_api_details(entity_type: &EntityType) -> ApiDetails {
         let (args, endpoint) = match &entity_type {
             EntityType::Computer(command) => match &command.subcommand {
-                ComputerSubcommand::Delete(id) =>  (Args::Ids(&id.id), ApiEndpoints::ComputerDelete),
+                ComputerSubcommand::Delete(id) => (Args::Ids(&id.id), ApiEndpoints::ComputerDelete),
                 ComputerSubcommand::Show(id) => (Args::Ids(&id.id), ApiEndpoints::ComputerShow),
-                ComputerSubcommand::Search {
-                    search_query,
-                } => (Args::String(search_query), ApiEndpoints::ComputerSearch),
+                ComputerSubcommand::Search { search_query } => {
+                    (Args::String(search_query), ApiEndpoints::ComputerSearch)
+                }
                 ComputerSubcommand::List => (Args::None, ApiEndpoints::ComputerList),
             },
             EntityType::Mobile(command) => match &command.subcommand {
                 MobileSubcommand::Delete(id) => (Args::Ids(&id.id), ApiEndpoints::MobileDelete),
                 MobileSubcommand::Show(id) => (Args::Ids(&id.id), ApiEndpoints::MobileShow),
-                MobileSubcommand::Search {
-                    search_query,
-                } => (Args::String(search_query), ApiEndpoints::MobileSearch),
+                MobileSubcommand::Search { search_query } => {
+                    (Args::String(search_query), ApiEndpoints::MobileSearch)
+                }
                 MobileSubcommand::List => (Args::None, ApiEndpoints::MobileList),
             },
             EntityType::User(command) => match &command.subcommand {
                 UserSubcommand::Delete(id) => (Args::Ids(&id.id), ApiEndpoints::UserDelete),
                 UserSubcommand::Show(id) => (Args::Ids(&id.id), ApiEndpoints::UserShow),
-                UserSubcommand::List => (Args::None , ApiEndpoints::UserList),
+                UserSubcommand::List => (Args::None, ApiEndpoints::UserList),
             },
             EntityType::Group(command) => match &command.group_command {
                 GroupSubcommand::Computer(group_subcommand) => match &group_subcommand {
-                    ComputerGroupCommand::Delete(id) => (Args::Ids(&id.id), ApiEndpoints::GroupComputerDelete),
-                    ComputerGroupCommand::Show(id) => (Args::Ids(&id.id), ApiEndpoints::GroupComputerShow),
+                    ComputerGroupCommand::Delete(id) => {
+                        (Args::Ids(&id.id), ApiEndpoints::GroupComputerDelete)
+                    }
+                    ComputerGroupCommand::Show(id) => {
+                        (Args::Ids(&id.id), ApiEndpoints::GroupComputerShow)
+                    }
                     ComputerGroupCommand::List => (Args::None, ApiEndpoints::GroupComputerList),
                 },
                 GroupSubcommand::Mobile(group_subcommand) => match &group_subcommand {
-                    MobileGroupCommand::Delete(id) => (Args::Ids(&id.id), ApiEndpoints::GroupMobileDelete),
-                    MobileGroupCommand::Show(id) => (Args::Ids(&id.id), ApiEndpoints::GroupMobileShow),
+                    MobileGroupCommand::Delete(id) => {
+                        (Args::Ids(&id.id), ApiEndpoints::GroupMobileDelete)
+                    }
+                    MobileGroupCommand::Show(id) => {
+                        (Args::Ids(&id.id), ApiEndpoints::GroupMobileShow)
+                    }
                     MobileGroupCommand::List => (Args::None, ApiEndpoints::GroupMobileList),
                 },
                 GroupSubcommand::User(group_subcommand) => match &group_subcommand {
-                    UserGroupCommand::Delete(id) => (Args::Ids(&id.id), ApiEndpoints::GroupUserDelete),
+                    UserGroupCommand::Delete(id) => {
+                        (Args::Ids(&id.id), ApiEndpoints::GroupUserDelete)
+                    }
                     UserGroupCommand::Show(id) => (Args::Ids(&id.id), ApiEndpoints::GroupUserShow),
                     UserGroupCommand::List => (Args::None, ApiEndpoints::GroupUserList),
                 },
@@ -213,21 +223,37 @@ impl ApiEndpoints {
             EntityType::AdvSearch(command) => match &command.adv_search_command {
                 AdvSearchSubcommand::Computer(adv_search_subcommand) => {
                     match &adv_search_subcommand {
-                        ComputerAdvSearchCommand::Delete(id) => (Args::Ids(&id.id), ApiEndpoints::AdvSearchComputerDelete),
-                        ComputerAdvSearchCommand::Show(id) => (Args::Ids(&id.id), ApiEndpoints::AdvSearchComputerShow),
-                        ComputerAdvSearchCommand::List => (Args::None, ApiEndpoints::AdvSearchComputerList),
+                        ComputerAdvSearchCommand::Delete(id) => {
+                            (Args::Ids(&id.id), ApiEndpoints::AdvSearchComputerDelete)
+                        }
+                        ComputerAdvSearchCommand::Show(id) => {
+                            (Args::Ids(&id.id), ApiEndpoints::AdvSearchComputerShow)
+                        }
+                        ComputerAdvSearchCommand::List => {
+                            (Args::None, ApiEndpoints::AdvSearchComputerList)
+                        }
                     }
                 }
                 AdvSearchSubcommand::Mobile(adv_search_subcommand) => {
                     match &adv_search_subcommand {
-                        MobileAdvSearchCommand::Delete(id) => (Args::Ids(&id.id), ApiEndpoints::AdvSearchMobileDelete),
-                        MobileAdvSearchCommand::Show(id) => (Args::Ids(&id.id), ApiEndpoints::AdvSearchMobileShow),
-                        MobileAdvSearchCommand::List => (Args::None, ApiEndpoints::AdvSearchMobileList),
+                        MobileAdvSearchCommand::Delete(id) => {
+                            (Args::Ids(&id.id), ApiEndpoints::AdvSearchMobileDelete)
+                        }
+                        MobileAdvSearchCommand::Show(id) => {
+                            (Args::Ids(&id.id), ApiEndpoints::AdvSearchMobileShow)
+                        }
+                        MobileAdvSearchCommand::List => {
+                            (Args::None, ApiEndpoints::AdvSearchMobileList)
+                        }
                     }
                 }
                 AdvSearchSubcommand::User(adv_search_subcommand) => match &adv_search_subcommand {
-                    UserAdvSearchCommand::Delete(id) => (Args::Ids(&id.id), ApiEndpoints::AdvSearchUserDelete),
-                    UserAdvSearchCommand::Show(id) => (Args::Ids(&id.id), ApiEndpoints::AdvSearchUserShow),
+                    UserAdvSearchCommand::Delete(id) => {
+                        (Args::Ids(&id.id), ApiEndpoints::AdvSearchUserDelete)
+                    }
+                    UserAdvSearchCommand::Show(id) => {
+                        (Args::Ids(&id.id), ApiEndpoints::AdvSearchUserShow)
+                    }
                     UserAdvSearchCommand::List => (Args::None, ApiEndpoints::AdvSearchUserList),
                 },
             },
@@ -235,7 +261,7 @@ impl ApiEndpoints {
 
         ApiDetails {
             args,
-            endpoint: endpoint.usage()
+            endpoint: endpoint.usage(),
         }
     }
 }
@@ -243,12 +269,12 @@ impl ApiEndpoints {
 pub enum Args<'a> {
     None,
     String(&'a String),
-    Ids(&'a Vec<u32>)
+    Ids(&'a Vec<u32>),
 }
 
 pub struct ApiDetails<'a> {
     pub args: Args<'a>,
-    pub endpoint: ApiEndpointDetails
+    pub endpoint: ApiEndpointDetails,
 }
 
 pub struct ApiEndpointDetails {
