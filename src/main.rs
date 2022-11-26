@@ -1,11 +1,11 @@
 mod api_endpoints;
 mod api_token;
 mod args;
-mod network_service;
+mod api_service;
 mod session;
 
 use crate::api_endpoints::{ApiDetails, ApiEndpoints, Args};
-use crate::network_service::ApiService;
+use crate::api_service::ApiService;
 use crate::session::Session;
 use args::JamfrsArgs;
 use clap::Parser;
