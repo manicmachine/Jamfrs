@@ -44,6 +44,8 @@ pub enum EntityType {
     Mobile(MobileCommand),
     /// Work with users records
     User(UserCommand),
+    /// Work with policy records
+    Policy(PolicyCommand),
     /// Work with smart & static groups
     Group(GroupCommand),
     /// Work with advanced searches
@@ -101,6 +103,22 @@ pub enum UserSubcommand {
     /// Show an existing user record
     Show(Id),
     /// List all user records
+    List,
+}
+
+#[derive(Debug, Args)]
+pub struct PolicyCommand {
+    #[clap(subcommand)]
+    pub subcommand: PolicySubcommand,
+}
+
+#[derive(Debug, Subcommand)]
+pub enum PolicySubcommand {
+    /// Delete an existing policy record
+    Delete(Id),
+    /// Show an existing policy record
+    Show(Id),
+    /// List all policy records
     List,
 }
 
