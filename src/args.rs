@@ -48,6 +48,8 @@ pub enum EntityType {
     Policy(PolicyCommand),
     /// Work with packages
     Package(PackageCommand),
+    /// Work with categories
+    Category(CategoryCommand),
     /// Work with smart & static groups
     Group(GroupCommand),
     /// Work with advanced searches
@@ -132,11 +134,27 @@ pub struct PackageCommand {
 
 #[derive(Debug, Subcommand)]
 pub enum PackageSubcommand {
-    /// Delete an existing policy record
+    /// Delete an existing package record
     Delete(Id),
-    /// Show an existing policy record
+    /// Show an existing package record
     Show(Id),
-    /// List all policy records
+    /// List all package records
+    List,
+}
+
+#[derive(Debug, Args)]
+pub struct CategoryCommand {
+    #[clap(subcommand)]
+    pub subcommand: CategorySubcommand,
+}
+
+#[derive(Debug, Subcommand)]
+pub enum CategorySubcommand {
+    /// Delete an existing category record
+    Delete(Id),
+    /// Show an existing category record
+    Show(Id),
+    /// List all category records
     List,
 }
 
