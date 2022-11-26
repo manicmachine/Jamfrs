@@ -1,4 +1,4 @@
-use crate::args::{AdvSearchSubcommand, CategorySubcommand, ComputerAdvSearchCommand, ComputerGroupCommand, ComputerSubcommand, EntityType, GroupSubcommand, MobileAdvSearchCommand, MobileGroupCommand, MobileSubcommand, PackageSubcommand, PolicySubcommand, UserAdvSearchCommand, UserGroupCommand, UserSubcommand};
+use crate::args::{AdvSearchSubcommand, CategorySubcommand, ComputerAdvSearchCommand, ComputerGroupCommand, ComputerSubcommand, DepartmentSubcommand, EntityType, GroupSubcommand, MobileAdvSearchCommand, MobileGroupCommand, MobileSubcommand, PackageSubcommand, PolicySubcommand, UserAdvSearchCommand, UserGroupCommand, UserSubcommand};
 use reqwest::Method;
 
 pub enum ApiEndpoints {
@@ -30,6 +30,10 @@ pub enum ApiEndpoints {
     CategoryDelete,
     CategoryShow,
     CategoryList,
+    /// Department
+    DepartmentDelete,
+    DepartmentShow,
+    DepartmentList,
     // Groups
     GroupComputerDelete,
     GroupComputerShow,
@@ -138,6 +142,18 @@ impl ApiEndpoints {
             ApiEndpoints::CategoryList => ApiEndpointDetails {
                 method: Method::GET,
                 url: "/JSSResource/categories",
+            },
+            ApiEndpoints::DepartmentDelete => ApiEndpointDetails {
+                method: Method::DELETE,
+                url: "/JSSResource/departments/id/{val}",
+            },
+            ApiEndpoints::DepartmentShow => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/departments/id/{val}",
+            },
+            ApiEndpoints::DepartmentList => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/departments",
             },
             ApiEndpoints::GroupComputerDelete => ApiEndpointDetails {
                 method: Method::DELETE,
@@ -251,6 +267,11 @@ impl ApiEndpoints {
                 CategorySubcommand::Delete(id) => (Args::Ids(&id.id), ApiEndpoints::CategoryDelete),
                 CategorySubcommand::Show(id) => (Args::Ids(&id.id), ApiEndpoints::CategoryShow),
                 CategorySubcommand::List => (Args::None, ApiEndpoints::CategoryList),
+            },
+            EntityType::Department(command) => match &command.subcommand {
+                DepartmentSubcommand::Delete(id) => (Args::Ids(&id.id), ApiEndpoints::DepartmentDelete),
+                DepartmentSubcommand::Show(id) => (Args::Ids(&id.id), ApiEndpoints::DepartmentShow),
+                DepartmentSubcommand::List => (Args::None, ApiEndpoints::DepartmentList),
             },
             EntityType::Group(command) => match &command.group_command {
                 GroupSubcommand::Computer(group_subcommand) => match &group_subcommand {

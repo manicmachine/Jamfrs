@@ -50,6 +50,8 @@ pub enum EntityType {
     Package(PackageCommand),
     /// Work with categories
     Category(CategoryCommand),
+    /// Work with departments
+    Department(DepartmentCommand),
     /// Work with smart & static groups
     Group(GroupCommand),
     /// Work with advanced searches
@@ -155,6 +157,22 @@ pub enum CategorySubcommand {
     /// Show an existing category record
     Show(Id),
     /// List all category records
+    List,
+}
+
+#[derive(Debug, Args)]
+pub struct DepartmentCommand {
+    #[clap(subcommand)]
+    pub subcommand: DepartmentSubcommand,
+}
+
+#[derive(Debug, Subcommand)]
+pub enum DepartmentSubcommand {
+    /// Delete an existing department record
+    Delete(Id),
+    /// Show an existing department record
+    Show(Id),
+    /// List all department records
     List,
 }
 
