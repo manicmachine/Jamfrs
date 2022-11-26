@@ -44,8 +44,10 @@ pub enum EntityType {
     Mobile(MobileCommand),
     /// Work with users records
     User(UserCommand),
-    /// Work with policy records
+    /// Work with policies
     Policy(PolicyCommand),
+    /// Work with packages
+    Package(PackageCommand),
     /// Work with smart & static groups
     Group(GroupCommand),
     /// Work with advanced searches
@@ -114,6 +116,22 @@ pub struct PolicyCommand {
 
 #[derive(Debug, Subcommand)]
 pub enum PolicySubcommand {
+    /// Delete an existing policy record
+    Delete(Id),
+    /// Show an existing policy record
+    Show(Id),
+    /// List all policy records
+    List,
+}
+
+#[derive(Debug, Args)]
+pub struct PackageCommand {
+    #[clap(subcommand)]
+    pub subcommand: PackageSubcommand,
+}
+
+#[derive(Debug, Subcommand)]
+pub enum PackageSubcommand {
     /// Delete an existing policy record
     Delete(Id),
     /// Show an existing policy record
