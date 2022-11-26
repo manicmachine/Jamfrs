@@ -1,8 +1,4 @@
-use crate::args::{
-    AdvSearchSubcommand, ComputerAdvSearchCommand, ComputerGroupCommand, ComputerSubcommand,
-    EntityType, GroupSubcommand, MobileAdvSearchCommand, MobileGroupCommand, MobileSubcommand,
-    UserAdvSearchCommand, UserGroupCommand, UserSubcommand,
-};
+use crate::args::{AdvSearchSubcommand, ComputerAdvSearchCommand, ComputerGroupCommand, ComputerSubcommand, EntityType, GroupSubcommand, MobileAdvSearchCommand, MobileGroupCommand, MobileSubcommand, PolicySubcommand, UserAdvSearchCommand, UserGroupCommand, UserSubcommand};
 use reqwest::Method;
 
 pub enum ApiEndpoints {
@@ -22,6 +18,10 @@ pub enum ApiEndpoints {
     UserDelete,
     UserShow,
     UserList,
+    // Policy
+    PolicyDelete,
+    PolicyShow,
+    PolicyList,
     // Groups
     GroupComputerDelete,
     GroupComputerShow,
@@ -94,6 +94,18 @@ impl ApiEndpoints {
             ApiEndpoints::UserList => ApiEndpointDetails {
                 method: Method::GET,
                 url: "/JSSResource/users",
+            },
+            ApiEndpoints::PolicyDelete => ApiEndpointDetails {
+                method: Method::DELETE,
+                url: "/JSSResource/policies/id/{val}",
+            },
+            ApiEndpoints::PolicyShow => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/policies/id/{val}",
+            },
+            ApiEndpoints::PolicyList => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/policies",
             },
             ApiEndpoints::GroupComputerDelete => ApiEndpointDetails {
                 method: Method::DELETE,
@@ -192,6 +204,11 @@ impl ApiEndpoints {
                 UserSubcommand::Delete(id) => (Args::Ids(&id.id), ApiEndpoints::UserDelete),
                 UserSubcommand::Show(id) => (Args::Ids(&id.id), ApiEndpoints::UserShow),
                 UserSubcommand::List => (Args::None, ApiEndpoints::UserList),
+            },
+            EntityType::Policy(command) => match &command.subcommand {
+                PolicySubcommand::Delete(id) => (Args::Ids(&id.id), ApiEndpoints::PolicyDelete),
+                PolicySubcommand::Show(id) => (Args::Ids(&id.id), ApiEndpoints::PolicyShow),
+                PolicySubcommand::List => (Args::None, ApiEndpoints::PolicyList),
             },
             EntityType::Group(command) => match &command.group_command {
                 GroupSubcommand::Computer(group_subcommand) => match &group_subcommand {
