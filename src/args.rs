@@ -56,6 +56,8 @@ pub enum EntityType {
     Ebook(EbookCommand),
     /// Work with buildings
     Building(BuildingCommand),
+    /// Work with mac applications
+    MacApp(MacAppCommand),
     /// Work with smart & static groups
     Group(GroupCommand),
     /// Work with advanced searches
@@ -209,6 +211,22 @@ pub enum BuildingSubcommand {
     /// Show an existing buildings record
     Show(Id),
     /// List all buildings records
+    List,
+}
+
+#[derive(Debug, Args)]
+pub struct MacAppCommand {
+    #[clap(subcommand)]
+    pub subcommand: MacAppSubcommand,
+}
+
+#[derive(Debug, Subcommand)]
+pub enum MacAppSubcommand {
+    /// Delete an existing mac application record
+    Delete(Id),
+    /// Show an existing mac application record
+    Show(Id),
+    /// List all mac application records
     List,
 }
 
