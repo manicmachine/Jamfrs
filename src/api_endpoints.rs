@@ -1,4 +1,4 @@
-use crate::args::{AdvSearchSubcommand, CategorySubcommand, ComputerAdvSearchCommand, ComputerGroupCommand, ComputerSubcommand, DepartmentSubcommand, EntityType, GroupSubcommand, MobileAdvSearchCommand, MobileGroupCommand, MobileSubcommand, PackageSubcommand, PolicySubcommand, UserAdvSearchCommand, UserGroupCommand, UserSubcommand};
+use crate::args::{AdvSearchSubcommand, CategorySubcommand, ComputerAdvSearchCommand, ComputerGroupCommand, ComputerSubcommand, DepartmentSubcommand, EbookSubcommand, EntityType, GroupSubcommand, MobileAdvSearchCommand, MobileGroupCommand, MobileSubcommand, PackageSubcommand, PolicySubcommand, UserAdvSearchCommand, UserGroupCommand, UserSubcommand};
 use reqwest::Method;
 
 pub enum ApiEndpoints {
@@ -34,6 +34,10 @@ pub enum ApiEndpoints {
     DepartmentDelete,
     DepartmentShow,
     DepartmentList,
+    /// EBook
+    EbookDelete,
+    EbookShow,
+    EbookList,
     // Groups
     GroupComputerDelete,
     GroupComputerShow,
@@ -155,6 +159,18 @@ impl ApiEndpoints {
                 method: Method::GET,
                 url: "/JSSResource/departments",
             },
+            ApiEndpoints::EbookDelete => ApiEndpointDetails {
+                method: Method::DELETE,
+                url: "/JSSResource/ebooks/id/{val}",
+            },
+            ApiEndpoints::EbookShow => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/ebooks/id/{val}",
+            },
+            ApiEndpoints::EbookList => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/ebooks",
+            },
             ApiEndpoints::GroupComputerDelete => ApiEndpointDetails {
                 method: Method::DELETE,
                 url: "/JSSResource/computergroups/id/{val}",
@@ -272,6 +288,11 @@ impl ApiEndpoints {
                 DepartmentSubcommand::Delete(id) => (Args::Ids(&id.id), ApiEndpoints::DepartmentDelete),
                 DepartmentSubcommand::Show(id) => (Args::Ids(&id.id), ApiEndpoints::DepartmentShow),
                 DepartmentSubcommand::List => (Args::None, ApiEndpoints::DepartmentList),
+            },
+            EntityType::Ebook(command) => match &command.subcommand {
+                EbookSubcommand::Delete(id) => (Args::Ids(&id.id), ApiEndpoints::EbookDelete),
+                EbookSubcommand::Show(id) => (Args::Ids(&id.id), ApiEndpoints::EbookShow),
+                EbookSubcommand::List => (Args::None, ApiEndpoints::EbookList),
             },
             EntityType::Group(command) => match &command.group_command {
                 GroupSubcommand::Computer(group_subcommand) => match &group_subcommand {
