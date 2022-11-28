@@ -1,8 +1,10 @@
 use crate::args::EntityType;
 use crate::{ApiDetails, ApiEndpoints, Args, Session};
-use reqwest::blocking::Client;
+use reqwest::Client;
 use reqwest::Method;
 use std::time::{SystemTime, UNIX_EPOCH};
+use tokio::sync::mpsc::{channel, Sender, Receiver};
+use tokio::task::JoinHandle;
 
 pub struct ApiService<'a> {
     client: Client,
@@ -60,56 +62,68 @@ impl<'a> ApiService<'a> {
         }
     }
 
-    pub fn process_command(&mut self) -> Result<String, String> {
-        if !&self.token_is_valid() {
-            match &self.authenticate() {
-                Ok(_) => { /* continue */ }
-                Err(err) => return Err(err.to_string()),
-            }
+    pub async fn process_commands(&mut self) ->  Receiver<Result<String, String>> {
+        // TODO: Reimplement such that tasks can re-authenticate as necessary
+        if !self.token_is_valid() {
+            self.authenticate().await.expect("Failed to authenticate with server");
         }
 
         let accept_type = format!("application/{}", if self.json { "json " } else { "xml" });
-        let res_builder = match self
-            .url_builder
-            .as_ref()
-            .unwrap()
-            .api_details
-            .endpoint
-            .method
-        {
-            Method::GET => self
-                .client
-                .get(self.url_builder.as_mut().unwrap().build_next_url()),
-            Method::POST => self
-                .client
-                .post(self.url_builder.as_mut().unwrap().build_next_url()),
-            Method::PUT => self
-                .client
-                .put(self.url_builder.as_mut().unwrap().build_next_url()),
-            Method::DELETE => self
-                .client
-                .delete(self.url_builder.as_mut().unwrap().build_next_url()),
-            _ => panic!("Invalid HTTP method provided"),
-        };
 
-        let res = res_builder
-            .bearer_auth(&self.jps_session.api_token.as_ref().unwrap().token)
-            .header("accept", accept_type)
-            .send();
+        let (tx, rx) = channel(self.number_of_commands() as usize);
+        let mut i = 0;
+        let iterations = self.number_of_commands();
 
-        match res {
-            Ok(res) => {
-                if res.status().is_success() {
-                    Ok(res.text().unwrap())
-                } else {
-                    Err(res.status().to_string())
+        while i < iterations {
+            let mut res_builder = match self
+                .url_builder
+                .as_ref()
+                .unwrap()
+                .api_details
+                .endpoint
+                .method
+            {
+                Method::GET => self
+                    .client
+                    .get(self.url_builder.as_mut().unwrap().build_next_url()),
+                Method::POST => self
+                    .client
+                    .post(self.url_builder.as_mut().unwrap().build_next_url()),
+                Method::PUT => self
+                    .client
+                    .put(self.url_builder.as_mut().unwrap().build_next_url()),
+                Method::DELETE => self
+                    .client
+                    .delete(self.url_builder.as_mut().unwrap().build_next_url()),
+                _ => panic!("Invalid HTTP method provided"),
+            };
+
+            res_builder = res_builder
+                .bearer_auth(&self.jps_session.api_token.as_ref().unwrap().token)
+                .header("accept", &accept_type);
+
+
+            let tx_clone = tx.clone();
+            tokio::spawn(async move {
+                match res_builder.send().await {
+                    Ok(res) => {
+                        if res.status().is_success() {
+                            tx_clone.send(Ok(res.text().await.unwrap())).await
+                        } else {
+                            tx_clone.send(Err(format!("Status {} received for {}", res.status().is_success(), res.url().path()))).await
+                        }
+                    }
+                    Err(err) => tx_clone.send(Err(err.to_string())).await,
                 }
-            }
-            Err(err) => Err(err.to_string()),
+            });
+
+            i += 1;
         }
+
+        rx
     }
 
-    fn authenticate(&mut self) -> Result<(), String> {
+    async fn authenticate(&mut self) -> Result<(), String> {
         let res = self
             .client
             .post(format!(
@@ -118,13 +132,14 @@ impl<'a> ApiService<'a> {
                 ApiEndpoints::TokenAuth.usage().url
             ))
             .basic_auth(&self.jps_session.username, Some(&self.jps_session.password))
-            .send();
+            .send()
+            .await;
 
         match res {
             Ok(token_res) => {
                 if token_res.status().is_success() {
                     self.jps_session
-                        .create_auth_token(token_res.text().unwrap())
+                        .create_auth_token(token_res.text().await.unwrap())
                 } else {
                     Err(token_res.status().to_string())
                 }
