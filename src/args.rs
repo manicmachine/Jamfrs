@@ -54,6 +54,8 @@ pub enum EntityType {
     Department(DepartmentCommand),
     /// Work with ebooks
     Ebook(EbookCommand),
+    /// Work with buildings
+    Building(BuildingCommand),
     /// Work with smart & static groups
     Group(GroupCommand),
     /// Work with advanced searches
@@ -191,6 +193,22 @@ pub enum EbookSubcommand {
     /// Show an existing ebook record
     Show(Id),
     /// List all ebook records
+    List,
+}
+
+#[derive(Debug, Args)]
+pub struct BuildingCommand {
+    #[clap(subcommand)]
+    pub subcommand: BuildingSubcommand,
+}
+
+#[derive(Debug, Subcommand)]
+pub enum BuildingSubcommand {
+    /// Delete an existing buildings record
+    Delete(Id),
+    /// Show an existing buildings record
+    Show(Id),
+    /// List all buildings records
     List,
 }
 
