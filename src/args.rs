@@ -58,6 +58,8 @@ pub enum EntityType {
     Building(BuildingCommand),
     /// Work with mac applications
     MacApp(MacAppCommand),
+    /// Work with mobile device applications
+    MobileApp(MobileAppCommand),
     /// Work with smart & static groups
     Group(GroupCommand),
     /// Work with advanced searches
@@ -227,6 +229,22 @@ pub enum MacAppSubcommand {
     /// Show an existing mac application record
     Show(Id),
     /// List all mac application records
+    List,
+}
+
+#[derive(Debug, Args)]
+pub struct MobileAppCommand {
+    #[clap(subcommand)]
+    pub subcommand: MobileAppSubcommand,
+}
+
+#[derive(Debug, Subcommand)]
+pub enum MobileAppSubcommand {
+    /// Delete an existing mobile device application record
+    Delete(Id),
+    /// Show an existing mobile device application record
+    Show(Id),
+    /// List all mobile device application records
     List,
 }
 

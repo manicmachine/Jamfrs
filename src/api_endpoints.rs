@@ -1,4 +1,4 @@
-use crate::args::{AdvSearchSubcommand, BuildingSubcommand, CategorySubcommand, ComputerAdvSearchCommand, ComputerGroupCommand, ComputerSubcommand, DepartmentSubcommand, EbookSubcommand, EntityType, GroupSubcommand, MacAppSubcommand, MobileAdvSearchCommand, MobileGroupCommand, MobileSubcommand, PackageSubcommand, PolicySubcommand, UserAdvSearchCommand, UserGroupCommand, UserSubcommand};
+use crate::args::{AdvSearchSubcommand, BuildingSubcommand, CategorySubcommand, ComputerAdvSearchCommand, ComputerGroupCommand, ComputerSubcommand, DepartmentSubcommand, EbookSubcommand, EntityType, GroupSubcommand, MacAppSubcommand, MobileAdvSearchCommand, MobileAppSubcommand, MobileGroupCommand, MobileSubcommand, PackageSubcommand, PolicySubcommand, UserAdvSearchCommand, UserGroupCommand, UserSubcommand};
 use reqwest::Method;
 
 pub enum ApiEndpoints {
@@ -46,6 +46,10 @@ pub enum ApiEndpoints {
     MacAppDelete,
     MacAppShow,
     MacAppList,
+    /// Mobile Device Applications
+    MobileAppDelete,
+    MobileAppShow,
+    MobileAppList,
     // Groups
     GroupComputerDelete,
     GroupComputerShow,
@@ -203,6 +207,18 @@ impl ApiEndpoints {
                 method: Method::GET,
                 url: "/JSSResource/macapplications",
             },
+            ApiEndpoints::MobileAppDelete => ApiEndpointDetails {
+                method: Method::DELETE,
+                url: "/JSSResource/mobiledeviceapplications/id/{val}",
+            },
+            ApiEndpoints::MobileAppShow => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/mobiledeviceapplications/id/{val}",
+            },
+            ApiEndpoints::MobileAppList => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/mobiledeviceapplications",
+            },
             ApiEndpoints::GroupComputerDelete => ApiEndpointDetails {
                 method: Method::DELETE,
                 url: "/JSSResource/computergroups/id/{val}",
@@ -335,6 +351,11 @@ impl ApiEndpoints {
                 MacAppSubcommand::Delete(id) => (Args::Ids(&id.id), ApiEndpoints::MacAppDelete),
                 MacAppSubcommand::Show(id) => (Args::Ids(&id.id), ApiEndpoints::MacAppShow),
                 MacAppSubcommand::List => (Args::None, ApiEndpoints::MacAppList),
+            },
+            EntityType::MobileApp(command) => match &command.subcommand {
+                MobileAppSubcommand::Delete(id) => (Args::Ids(&id.id), ApiEndpoints::MobileAppDelete),
+                MobileAppSubcommand::Show(id) => (Args::Ids(&id.id), ApiEndpoints::MobileAppShow),
+                MobileAppSubcommand::List => (Args::None, ApiEndpoints::MobileAppList),
             },
             EntityType::Group(command) => match &command.group_command {
                 GroupSubcommand::Computer(group_subcommand) => match &group_subcommand {
