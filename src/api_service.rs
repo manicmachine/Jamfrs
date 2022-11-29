@@ -112,8 +112,8 @@ impl<'a> ApiService<'a> {
                         } else {
                             tx_clone
                                 .send(Err(format!(
-                                    "Status {} received for {}",
-                                    res.status().is_success(),
+                                    "{} for {}",
+                                    res.status(),
                                     res.url().path()
                                 )))
                                 .await
