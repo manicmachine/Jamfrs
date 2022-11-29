@@ -60,6 +60,8 @@ pub enum EntityType {
     MacApp(MacAppCommand),
     /// Work with mobile device applications
     MobileApp(MobileAppCommand),
+    /// Work with scripts
+    Script(ScriptCommand),
     /// Work with smart & static groups
     Group(GroupCommand),
     /// Work with advanced searches
@@ -245,6 +247,22 @@ pub enum MobileAppSubcommand {
     /// Show an existing mobile device application record
     Show(Id),
     /// List all mobile device application records
+    List,
+}
+
+#[derive(Debug, Args)]
+pub struct ScriptCommand {
+    #[clap(subcommand)]
+    pub subcommand: ScriptSubcommand,
+}
+
+#[derive(Debug, Subcommand)]
+pub enum ScriptSubcommand {
+    /// Delete an existing script
+    Delete(Id),
+    /// Show an existing script
+    Show(Id),
+    /// List all script
     List,
 }
 
