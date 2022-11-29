@@ -22,6 +22,7 @@ export data either as XML or JSON.
 | Building                | - Delete<br/>- Show<br/>- List                                                               |
 | Mac App                 | - Delete<br/>- Show<br/>- List                                                               |
 | Mobile Device App       | - Delete<br/>- Show<br/>- List                                                               |
+| Script                  | - Delete<br/>- Show<br/>- List                                                               |
 | Groups (Smart & Static) | - Delete<br/>- Show<br/>- List                                                               |
 | Advanced Search         | - Delete<br/>- Show<br/>- List                                                               |
 
@@ -43,6 +44,7 @@ Commands:
   building    Work with buildings
   mac-app     Work with mac applications
   mobile-app  Work with mobile device applications
+  script      Work with scripts
   group       Work with smart & static groups
   adv-search  Work with advanced searches
   help        Print this message or the help of the given subcommand(s)
@@ -192,6 +194,18 @@ Commands:
   delete  Delete an existing mobile device application record
   show    Show an existing mobile device application record
   list    List all mobile device application records
+```
+
+##### Command: script
+```
+Work with scripts
+
+Usage: jamfrs --server <SERVER_ADDRESS> --user <USERNAME> --password <PASSWORD> script <COMMAND>
+
+Commands:
+  delete  Delete an existing script
+  show    Show an existing script
+  list    List all script
 ```
 
 ##### Command: group
