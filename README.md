@@ -1,22 +1,5 @@
 # Jamfrs
 
-## Table of Contents
-- [Purpose](#purpose)
-- [Usage](#usage)
-  - [Command: computer](#command-computer)
-  - [Command: mobile](#command-mobile)
-  - [Command: user](#command-user)
-  - [Command: group](#command-group)
-    - [Group Subcommand: computer](#group-subcommand-computer)
-    - [Group Subcommand: mobile](#group-subcommand-mobile)
-    - [Group Subcommand: user](#group-subcommand-user)
-  - [Command: adv-search](#command-adv-search)
-    - [Advanced Search Subcommand: computer](#advanced-search-subcommand-computer)
-    - [Advanced Search Subcommand: mobile](#advanced-search-subcommand-mobile)
-    - [Advanced Search Subcommand: user](#advanced-search-subcommand-user)
-- [Build](#build)
-- [License](#license)
-
 ## Purpose
 Sometimes you just want to get some information from the JPS but the UI can be slow at times, especially when looking
 for several records at a time. Or maybe you want a quick and easy way to export data from the JPS into another script.
@@ -26,13 +9,21 @@ export data either as XML or JSON.
 
 
 ### Currently Jamfrs supports the following queries:
-| Entity   | Capabilities                                                                                 |
-|----------|----------------------------------------------------------------------------------------------|
-| Computer | - Delete (ID)<br/>- Show (ID)<br/>- Search* (ID, Name, UUID, Serial, MAC Address)<br/>- List |
-| Mobile Devices| - Delete (ID)<br/>- Show (ID)<br/>- Search* (ID, Name, UUID, Serial, MAC Address)<br/>- List |
-| Users | - Delete<br/>- Show<br/>- Search* (ID, Name, UUID, Serial, MAC Address)<br/>- List                                                               |
+| Entity                  | Capabilities                                                                                 |
+|-------------------------|----------------------------------------------------------------------------------------------|
+| Computer                | - Delete (ID)<br/>- Show (ID)<br/>- Search* (ID, Name, UUID, Serial, MAC Address)<br/>- List |
+| Mobile Devices          | - Delete (ID)<br/>- Show (ID)<br/>- Search* (ID, Name, UUID, Serial, MAC Address)<br/>- List |
+| Users                   | - Delete<br/>- Show<br/>- Search* (ID, Name, UUID, Serial, MAC Address)<br/>- List           |
+| Policy                  | - Delete<br/>- Show<br/>- List                                                               |
+| Package                 | - Delete<br/>- Show<br/>- List                                                               |
+| Category                | - Delete<br/>- Show<br/>- List                                                               |
+| Department              | - Delete<br/>- Show<br/>- List                                                               |
+| Ebook                   | - Delete<br/>- Show<br/>- List                                                               |
+| Building                | - Delete<br/>- Show<br/>- List                                                               |
+| Mac App                 | - Delete<br/>- Show<br/>- List                                                               |
+| Mobile Device App       | - Delete<br/>- Show<br/>- List                                                               |
 | Groups (Smart & Static) | - Delete<br/>- Show<br/>- List                                                               |
-| Advanced Search| - Delete<br/>- Show<br/>- List|
+| Advanced Search         | - Delete<br/>- Show<br/>- List                                                               |
 
 **Supports wildcards*
  
@@ -44,6 +35,14 @@ Commands:
   computer    Work with computer records
   mobile      Work with mobile device records
   user        Work with users records
+  policy      Work with policies
+  package     Work with packages
+  category    Work with categories
+  department  Work with departments
+  ebook       Work with ebooks
+  building    Work with buildings
+  mac-app     Work with mac applications
+  mobile-app  Work with mobile device applications
   group       Work with smart & static groups
   adv-search  Work with advanced searches
   help        Print this message or the help of the given subcommand(s)
@@ -59,6 +58,8 @@ Options:
   -h, --help                     Print help information
   -V, --version                  Print version information
   ```
+
+<details><summary>Extended Help</summary>
 
 ##### Command: computer
 ```
@@ -95,6 +96,102 @@ Commands:
   delete  Delete an existing user record
   show    Show an existing user record
   list    List all user records
+```
+
+##### Command: policy
+```
+Work with policies
+
+Usage: jamfrs --server <SERVER_ADDRESS> --user <USERNAME> --password <PASSWORD> policy <COMMAND>
+
+Commands:
+  delete  Delete an existing policy record
+  show    Show an existing policy record
+  list    List all policy records
+```
+
+##### Command: package
+```
+Work with policies
+
+Usage: jamfrs --server <SERVER_ADDRESS> --user <USERNAME> --password <PASSWORD> policy <COMMAND>
+
+Commands:
+  delete  Delete an existing policy record
+  show    Show an existing policy record
+  list    List all policy records
+```
+
+##### Command: category
+```
+Work with categories
+
+Usage: jamfrs --server <SERVER_ADDRESS> --user <USERNAME> --password <PASSWORD> category <COMMAND>
+
+Commands:
+  delete  Delete an existing category record
+  show    Show an existing category record
+  list    List all category records
+```
+
+##### Command: department
+```
+Work with departments
+
+Usage: jamfrs --server <SERVER_ADDRESS> --user <USERNAME> --password <PASSWORD> department <COMMAND>
+
+Commands:
+  delete  Delete an existing department record
+  show    Show an existing department record
+  list    List all department records
+```
+
+##### Command: ebook
+```
+Work with ebooks
+
+Usage: jamfrs --server <SERVER_ADDRESS> --user <USERNAME> --password <PASSWORD> ebook <COMMAND>
+
+Commands:
+  delete  Delete an existing ebook record
+  show    Show an existing ebook record
+  list    List all ebook records
+```
+
+##### Command: building
+```
+Work with buildings
+
+Usage: jamfrs --server <SERVER_ADDRESS> --user <USERNAME> --password <PASSWORD> building <COMMAND>
+
+Commands:
+  delete  Delete an existing buildings record
+  show    Show an existing buildings record
+  list    List all buildings records
+```
+
+##### Command: mac-app
+```
+Work with mac applications
+
+Usage: jamfrs --server <SERVER_ADDRESS> --user <USERNAME> --password <PASSWORD> mac-app <COMMAND>
+
+Commands:
+  delete  Delete an existing mac application record
+  show    Show an existing mac application record
+  list    List all mac application records
+```
+
+##### Command: mobile-app
+```
+Work with mobile device applications
+
+Usage: jamfrs --server <SERVER_ADDRESS> --user <USERNAME> --password <PASSWORD> mobile-app <COMMAND>
+
+Commands:
+  delete  Delete an existing mobile device application record
+  show    Show an existing mobile device application record
+  list    List all mobile device application records
 ```
 
 ##### Command: group
@@ -191,6 +288,7 @@ Commands:
   show    Show an existing user advanced search
   list    List all user advanced searches
 ```
+</details>
 
 ## Build
 Being a Rust application, Jamfrs is built using `cargo` ([get cargo](https://www.rust-lang.org/learn/get-started)). To build, simply clone the repo, navigate to
