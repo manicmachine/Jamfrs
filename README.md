@@ -292,7 +292,7 @@ Commands:
 
 ## Build
 Being a Rust application, Jamfrs is built using `cargo` ([get cargo](https://www.rust-lang.org/learn/get-started)). To build, simply clone the repo, navigate to
-the `jamfrs` directory containing the `Cargo.toml` file, and run `cargo build --release`.
+the `jamfrs` directory containing the `Cargo.toml` file, and run `cargo build --release`. You'll find the newly created executable in `jamfrs/target/release`. 
 
 ## License
 MIT License
