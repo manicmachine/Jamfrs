@@ -1,4 +1,10 @@
-use crate::args::{AdvSearchSubcommand, BuildingSubcommand, CategorySubcommand, ComputerAdvSearchCommand, ComputerGroupCommand, ComputerSubcommand, DepartmentSubcommand, EbookSubcommand, EntityType, GroupSubcommand, MacAppSubcommand, MobileAdvSearchCommand, MobileAppSubcommand, MobileGroupCommand, MobileSubcommand, PackageSubcommand, PolicySubcommand, UserAdvSearchCommand, UserGroupCommand, UserSubcommand};
+use crate::args::{
+    AdvSearchSubcommand, BuildingSubcommand, CategorySubcommand, ComputerAdvSearchCommand,
+    ComputerGroupCommand, ComputerSubcommand, DepartmentSubcommand, EbookSubcommand, EntityType,
+    GroupSubcommand, MacAppSubcommand, MobileAdvSearchCommand, MobileAppSubcommand,
+    MobileGroupCommand, MobileSubcommand, PackageSubcommand, PolicySubcommand,
+    UserAdvSearchCommand, UserGroupCommand, UserSubcommand,
+};
 use reqwest::Method;
 
 pub enum ApiEndpoints {

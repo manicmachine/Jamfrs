@@ -3,8 +3,7 @@ use crate::{ApiDetails, ApiEndpoints, Args, Session};
 use reqwest::Client;
 use reqwest::Method;
 use std::time::{SystemTime, UNIX_EPOCH};
-use tokio::sync::mpsc::{channel, Sender, Receiver};
-use tokio::task::JoinHandle;
+use tokio::sync::mpsc::{channel, Receiver};
 
 pub struct ApiService<'a> {
     client: Client,
@@ -62,10 +61,12 @@ impl<'a> ApiService<'a> {
         }
     }
 
-    pub async fn process_commands(&mut self) ->  Receiver<Result<String, String>> {
+    pub async fn process_commands(&mut self) -> Receiver<Result<String, String>> {
         // TODO: Reimplement such that tasks can re-authenticate as necessary
         if !self.token_is_valid() {
-            self.authenticate().await.expect("Failed to authenticate with server");
+            self.authenticate()
+                .await
+                .expect("Failed to authenticate with server");
         }
 
         let accept_type = format!("application/{}", if self.json { "json " } else { "xml" });
@@ -102,7 +103,6 @@ impl<'a> ApiService<'a> {
                 .bearer_auth(&self.jps_session.api_token.as_ref().unwrap().token)
                 .header("accept", &accept_type);
 
-
             let tx_clone = tx.clone();
             tokio::spawn(async move {
                 match res_builder.send().await {
@@ -110,7 +110,13 @@ impl<'a> ApiService<'a> {
                         if res.status().is_success() {
                             tx_clone.send(Ok(res.text().await.unwrap())).await
                         } else {
-                            tx_clone.send(Err(format!("Status {} received for {}", res.status().is_success(), res.url().path()))).await
+                            tx_clone
+                                .send(Err(format!(
+                                    "Status {} received for {}",
+                                    res.status().is_success(),
+                                    res.url().path()
+                                )))
+                                .await
                         }
                     }
                     Err(err) => tx_clone.send(Err(err.to_string())).await,
