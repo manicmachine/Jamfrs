@@ -70,12 +70,9 @@ impl<'a> ApiService<'a> {
         }
 
         let accept_type = format!("application/{}", if self.json { "json " } else { "xml" });
-
         let (tx, rx) = channel(self.number_of_commands() as usize);
-        let mut i = 0;
-        let iterations = self.number_of_commands();
 
-        while i < iterations {
+        while let Some(url) = self.url_builder.as_mut().unwrap().next() {
             let mut res_builder = match self
                 .url_builder
                 .as_ref()
@@ -84,18 +81,10 @@ impl<'a> ApiService<'a> {
                 .endpoint
                 .method
             {
-                Method::GET => self
-                    .client
-                    .get(self.url_builder.as_mut().unwrap().build_next_url()),
-                Method::POST => self
-                    .client
-                    .post(self.url_builder.as_mut().unwrap().build_next_url()),
-                Method::PUT => self
-                    .client
-                    .put(self.url_builder.as_mut().unwrap().build_next_url()),
-                Method::DELETE => self
-                    .client
-                    .delete(self.url_builder.as_mut().unwrap().build_next_url()),
+                Method::GET => self.client.get(url),
+                Method::POST => self.client.post(url),
+                Method::PUT => self.client.put(url),
+                Method::DELETE => self.client.delete(url),
                 _ => panic!("Invalid HTTP method provided"),
             };
 
@@ -111,19 +100,13 @@ impl<'a> ApiService<'a> {
                             tx_clone.send(Ok(res.text().await.unwrap())).await
                         } else {
                             tx_clone
-                                .send(Err(format!(
-                                    "{} for {}",
-                                    res.status(),
-                                    res.url().path()
-                                )))
+                                .send(Err(format!("{} for {}", res.status(), res.url().path())))
                                 .await
                         }
                     }
                     Err(err) => tx_clone.send(Err(err.to_string())).await,
                 }
             });
-
-            i += 1;
         }
 
         rx
@@ -181,22 +164,43 @@ impl<'a> UrlBuilder<'a> {
             arg_index: 0,
         }
     }
+}
 
-    fn build_next_url(&mut self) -> String {
+impl<'a> Iterator for UrlBuilder<'a> {
+    type Item = String;
+
+    fn next(&mut self) -> Option<Self::Item> {
         match self.api_details.args {
             Args::None => {
-                format!("{}{}", self.address, self.api_details.endpoint.url)
+                if self.arg_index == 0 {
+                    self.arg_index += 1;
+                    Some(format!("{}{}", self.address, self.api_details.endpoint.url))
+                } else {
+                    None
+                }
             }
-            Args::String(string) => format!("{}{}", self.address, self.api_details.endpoint.url)
-                .replace("{val}", string),
+            Args::String(string) => {
+                if self.arg_index == 0 {
+                    self.arg_index += 1;
+                    Some(
+                        format!("{}{}", self.address, self.api_details.endpoint.url)
+                            .replace("{val}", string),
+                    )
+                } else {
+                    None
+                }
+            }
             Args::Ids(ids) => {
-                let url = format!("{}{}", self.address, self.api_details.endpoint.url).replace(
-                    "{val}",
-                    ids.get(self.arg_index).unwrap().to_string().as_str(),
-                );
-                self.arg_index += 1;
-
-                url
+                if self.arg_index < ids.len() {
+                    let url = format!("{}{}", self.address, self.api_details.endpoint.url).replace(
+                        "{val}",
+                        ids.get(self.arg_index).unwrap().to_string().as_str(),
+                    );
+                    self.arg_index += 1;
+                    Some(url)
+                } else {
+                    None
+                }
             }
         }
     }
