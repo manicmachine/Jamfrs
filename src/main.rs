@@ -52,8 +52,14 @@ async fn main() {
                             .write_with_config(stdout(), emitter_config)
                             .unwrap();
                     } else if args.json && args.pretty {
-                        let json_obj: Value = serde_json::from_str(res).unwrap();
-                        println!("{}", serde_json::to_string_pretty(&json_obj).unwrap());
+                        let json_obj: Result<Value, _> = serde_json::from_str(res);
+
+                        match json_obj {
+                            Ok(json) => {
+                                println!("{}", serde_json::to_string_pretty(&json).unwrap())
+                            }
+                            Err(_) => println!("{}", res)
+                        }
                     } else {
                         print!("{},", res);
                     }
