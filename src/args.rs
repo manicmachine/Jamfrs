@@ -8,7 +8,7 @@ pub struct JamfrsArgs {
     #[arg(short, long = "server")]
     pub server_address: String,
 
-    /// Port that the Jamf Pro server is listening to; Defaults to 443 for Jamf cloud instances, 8443 otherwise
+    /// Port that the Jamf Pro server is listening to; Defaults to 443 for Jamf cloud instances, 8443 for others. If 'insecure' is passed then the default is 8080.
     #[arg(long)]
     pub port: Option<u16>,
 
@@ -24,7 +24,7 @@ pub struct JamfrsArgs {
     #[arg(long)]
     pub pretty: bool,
 
-    /// Request JSON data instead of the default XML
+    /// Request JSON data instead of the default XML; Note that delete queries always respond with XML
     #[arg(long)]
     pub json: bool,
 
