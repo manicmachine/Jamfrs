@@ -2,8 +2,9 @@ use crate::args::{
     AdvSearchSubcommand, BuildingSubcommand, CategorySubcommand, ComputerAdvSearchCommand,
     ComputerGroupCommand, ComputerSubcommand, DepartmentSubcommand, EbookSubcommand, EntityType,
     GroupSubcommand, MacAppSubcommand, MobileAdvSearchCommand, MobileAppSubcommand,
-    MobileGroupCommand, MobileSubcommand, PackageSubcommand, PolicySubcommand, ScriptSubcommand,
-    UserAdvSearchCommand, UserGroupCommand, UserSubcommand,
+    MobileGroupCommand, MobileSubcommand, PackageSubcommand, PolicySubcommand,
+    RestrictedSoftwareSubcommand, ScriptSubcommand, UserAdvSearchCommand, UserGroupCommand,
+    UserSubcommand,
 };
 use reqwest::Method;
 
@@ -28,38 +29,42 @@ pub enum ApiEndpoints {
     PolicyDelete,
     PolicyShow,
     PolicyList,
-    /// Package
+    // Package
     PackageDelete,
     PackageShow,
     PackageList,
-    /// Category
+    // Category
     CategoryDelete,
     CategoryShow,
     CategoryList,
-    /// Department
+    // Department
     DepartmentDelete,
     DepartmentShow,
     DepartmentList,
-    /// EBook
+    // EBook
     EbookDelete,
     EbookShow,
     EbookList,
-    /// Building
+    // Building
     BuildingDelete,
     BuildingShow,
     BuildingList,
-    /// Mac Applications
+    // Mac Applications
     MacAppDelete,
     MacAppShow,
     MacAppList,
-    /// Mobile Device Applications
+    // Mobile Device Applications
     MobileAppDelete,
     MobileAppShow,
     MobileAppList,
-    /// Scripts
+    // Scripts
     ScriptDelete,
     ScriptShow,
     ScriptList,
+    // Restricted Software
+    RestrictedSoftwareDelete,
+    RestrictedSoftwareShow,
+    RestrictedSoftwareList,
     // Groups
     GroupComputerDelete,
     GroupComputerShow,
@@ -241,6 +246,18 @@ impl ApiEndpoints {
                 method: Method::GET,
                 url: "/JSSResource/scripts",
             },
+            ApiEndpoints::RestrictedSoftwareDelete => ApiEndpointDetails {
+                method: Method::DELETE,
+                url: "/JSSResource/restrictedsoftware/id/{val}",
+            },
+            ApiEndpoints::RestrictedSoftwareShow => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/restrictedsoftware/id/{val}",
+            },
+            ApiEndpoints::RestrictedSoftwareList => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/restrictedsoftware",
+            },
             ApiEndpoints::GroupComputerDelete => ApiEndpointDetails {
                 method: Method::DELETE,
                 url: "/JSSResource/computergroups/id/{val}",
@@ -417,6 +434,19 @@ impl ApiEndpoints {
                 }
                 ScriptSubcommand::Show(id) => (Args::Ids(id.get_ids()?), ApiEndpoints::ScriptShow),
                 ScriptSubcommand::List => (Args::None, ApiEndpoints::ScriptList),
+            },
+            EntityType::RestrictedSoftware(command) => match &command.subcommand {
+                RestrictedSoftwareSubcommand::Delete(id) => (
+                    Args::Ids(id.get_ids()?),
+                    ApiEndpoints::RestrictedSoftwareDelete,
+                ),
+                RestrictedSoftwareSubcommand::Show(id) => (
+                    Args::Ids(id.get_ids()?),
+                    ApiEndpoints::RestrictedSoftwareShow,
+                ),
+                RestrictedSoftwareSubcommand::List => {
+                    (Args::None, ApiEndpoints::RestrictedSoftwareList)
+                }
             },
             EntityType::Group(command) => match &command.group_command {
                 GroupSubcommand::Computer(group_subcommand) => match &group_subcommand {

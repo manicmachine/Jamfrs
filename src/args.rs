@@ -62,6 +62,8 @@ pub enum EntityType {
     MobileApp(MobileAppCommand),
     /// Work with scripts
     Script(ScriptCommand),
+    /// Work with restricted software
+    RestrictedSoftware(RestrictedSoftwareCommand),
     /// Work with smart & static groups
     Group(GroupCommand),
     /// Work with advanced searches
@@ -263,6 +265,22 @@ pub enum ScriptSubcommand {
     /// Show an existing script
     Show(Id),
     /// List all script
+    List,
+}
+
+#[derive(Debug, Args)]
+pub struct RestrictedSoftwareCommand {
+    #[clap(subcommand)]
+    pub subcommand: RestrictedSoftwareSubcommand,
+}
+
+#[derive(Debug, Subcommand)]
+pub enum RestrictedSoftwareSubcommand {
+    /// Delete an existing restricted software
+    Delete(Id),
+    /// Show an existing restricted software
+    Show(Id),
+    /// List all restricted software
     List,
 }
 
