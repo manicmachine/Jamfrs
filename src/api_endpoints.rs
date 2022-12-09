@@ -2,7 +2,7 @@ use crate::args::{
     AdvSearchSubcommand, BuildingSubcommand, CategorySubcommand, ComputerAdvSearchCommand,
     ComputerGroupCommand, ComputerSubcommand, DepartmentSubcommand, EbookSubcommand, EntityType,
     GroupSubcommand, MacAppSubcommand, MobileAdvSearchCommand, MobileAppSubcommand,
-    MobileGroupCommand, MobileSubcommand, PackageSubcommand, PolicySubcommand,
+    MobileGroupCommand, MobileSubcommand, PackageSubcommand, PolicySubcommand, PrinterSubcommand,
     RestrictedSoftwareSubcommand, ScriptSubcommand, UserAdvSearchCommand, UserGroupCommand,
     UserSubcommand,
 };
@@ -65,6 +65,10 @@ pub enum ApiEndpoints {
     RestrictedSoftwareDelete,
     RestrictedSoftwareShow,
     RestrictedSoftwareList,
+    // Printer
+    PrinterDelete,
+    PrinterShow,
+    PrinterList,
     // Groups
     GroupComputerDelete,
     GroupComputerShow,
@@ -258,6 +262,18 @@ impl ApiEndpoints {
                 method: Method::GET,
                 url: "/JSSResource/restrictedsoftware",
             },
+            ApiEndpoints::PrinterDelete => ApiEndpointDetails {
+                method: Method::DELETE,
+                url: "/JSSResource/printers/id/{val}",
+            },
+            ApiEndpoints::PrinterShow => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/printers/id/{val}",
+            },
+            ApiEndpoints::PrinterList => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/printers",
+            },
             ApiEndpoints::GroupComputerDelete => ApiEndpointDetails {
                 method: Method::DELETE,
                 url: "/JSSResource/computergroups/id/{val}",
@@ -447,6 +463,15 @@ impl ApiEndpoints {
                 RestrictedSoftwareSubcommand::List => {
                     (Args::None, ApiEndpoints::RestrictedSoftwareList)
                 }
+            },
+            EntityType::Printer(command) => match &command.subcommand {
+                PrinterSubcommand::Delete(id) => {
+                    (Args::Ids(id.get_ids()?), ApiEndpoints::PrinterDelete)
+                }
+                PrinterSubcommand::Show(id) => {
+                    (Args::Ids(id.get_ids()?), ApiEndpoints::PrinterShow)
+                }
+                PrinterSubcommand::List => (Args::None, ApiEndpoints::PrinterList),
             },
             EntityType::Group(command) => match &command.group_command {
                 GroupSubcommand::Computer(group_subcommand) => match &group_subcommand {

@@ -64,6 +64,8 @@ pub enum EntityType {
     Script(ScriptCommand),
     /// Work with restricted software
     RestrictedSoftware(RestrictedSoftwareCommand),
+    /// Work with printers
+    Printer(PrinterCommand),
     /// Work with smart & static groups
     Group(GroupCommand),
     /// Work with advanced searches
@@ -281,6 +283,22 @@ pub enum RestrictedSoftwareSubcommand {
     /// Show an existing restricted software
     Show(Id),
     /// List all restricted software
+    List,
+}
+
+#[derive(Debug, Args)]
+pub struct PrinterCommand {
+    #[clap(subcommand)]
+    pub subcommand: PrinterSubcommand,
+}
+
+#[derive(Debug, Subcommand)]
+pub enum PrinterSubcommand {
+    /// Delete an existing printer
+    Delete(Id),
+    /// Show an existing printer
+    Show(Id),
+    /// List all printers
     List,
 }
 
