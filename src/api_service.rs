@@ -43,17 +43,19 @@ impl<'a> ApiService<'a> {
         })
     }
 
-    pub fn set_commands(&mut self, commands: &'a EntityType) {
+    pub fn set_commands(&mut self, commands: &'a EntityType) -> Result<(), String> {
         self.url_builder = Some(UrlBuilder::new(
             self.jps_session.server_address.clone(),
-            ApiEndpoints::get_api_details(commands),
+            ApiEndpoints::get_api_details(commands)?,
         ));
+
+        Ok(())
     }
 
     pub fn number_of_commands(&self) -> u32 {
         match self.url_builder {
             None => 0,
-            Some(ref url_builder) => match url_builder.api_details.args {
+            Some(ref url_builder) => match &url_builder.api_details.args {
                 Args::None => 1,
                 Args::String(_) => 1,
                 Args::Ids(ids) => ids.len() as u32,
@@ -170,7 +172,7 @@ impl<'a> Iterator for UrlBuilder<'a> {
     type Item = String;
 
     fn next(&mut self) -> Option<Self::Item> {
-        match self.api_details.args {
+        match &self.api_details.args {
             Args::None => {
                 if self.arg_index == 0 {
                     self.arg_index += 1;

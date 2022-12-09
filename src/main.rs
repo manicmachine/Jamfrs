@@ -32,7 +32,13 @@ async fn main() {
         }
     };
 
-    api_service.set_commands(&args.entity_type);
+    match api_service.set_commands(&args.entity_type) {
+        Ok(_) => { /* continue */ }
+        Err(err) => {
+            eprintln!("{}", err);
+            exit(1);
+        }
+    }
 
     let mut rx = api_service.process_commands().await;
     let mut errors: Vec<String> = Vec::new();
@@ -58,7 +64,7 @@ async fn main() {
                             Ok(json) => {
                                 println!("{}", serde_json::to_string_pretty(&json).unwrap())
                             }
-                            Err(_) => println!("{}", res)
+                            Err(_) => println!("{}", res),
                         }
                     } else {
                         print!("{},", res);

@@ -366,6 +366,45 @@ pub enum UserAdvSearchCommand {
 
 #[derive(Debug, Args)]
 pub struct Id {
-    #[clap(required = true, value_delimiter = ',')]
+    #[arg(value_delimiter = ',', group = "id_range")]
     pub id: Vec<u32>,
+
+    /// Query a range of Ids with the format START,FINISH inclusive
+    #[arg(short, long, value_delimiter = ',', group = "id_range", value_parser = range_validator)]
+    pub range: Vec<u32>,
+}
+
+fn range_validator(s: &str) -> Result<u32, String> {
+    static mut RANGE_ARG_COUNT: u32 = 0;
+    let arg: Result<u32, _> = s.to_string().parse();
+
+    unsafe {
+        if let Ok(arg) = arg {
+            if RANGE_ARG_COUNT < 2 {
+                RANGE_ARG_COUNT += 1;
+                return Ok(arg);
+            }
+        }
+    }
+    Err("range only accepts 2 numerical values <START, STOP> inclusive".to_string())
+}
+
+impl Id {
+    pub fn get_ids(&self) -> Result<Vec<u32>, String> {
+        let ids = if !self.id.is_empty() {
+            self.id.clone()
+        } else {
+            self.generate_ids()?
+        };
+
+        Ok(ids)
+    }
+
+    fn generate_ids(&self) -> Result<Vec<u32>, String> {
+        if let (Some(start), Some(end)) = (self.range.first(), self.range.get(1)) {
+            Ok((*start..=*end).collect::<Vec<u32>>())
+        } else {
+            Err("Range requires 2 numerical values <START, STOP> inclusive".to_string())
+        }
+    }
 }
