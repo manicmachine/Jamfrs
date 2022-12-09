@@ -366,11 +366,11 @@ pub enum UserAdvSearchCommand {
 
 #[derive(Debug, Args)]
 pub struct Id {
-    #[arg(value_delimiter = ',', group = "id_range")]
+    #[arg(required = true, value_delimiter = ',', group = "id_range")]
     pub id: Vec<u32>,
 
     /// Query a range of Ids with the format START,FINISH inclusive
-    #[arg(short, long, value_delimiter = ',', group = "id_range", value_parser = range_validator)]
+    #[arg(required = true, short, long, value_delimiter = ',', group = "id_range", value_parser = range_validator)]
     pub range: Vec<u32>,
 }
 
