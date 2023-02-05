@@ -66,6 +66,8 @@ pub enum EntityType {
     RestrictedSoftware(RestrictedSoftwareCommand),
     /// Work with printers
     Printer(PrinterCommand),
+    /// Work with patch
+    Patch(PatchCommand),
     /// Work with smart & static groups
     Group(GroupCommand),
     /// Work with advanced searches
@@ -299,6 +301,86 @@ pub enum PrinterSubcommand {
     /// Show an existing printer
     Show(Id),
     /// List all printers
+    List,
+}
+
+#[derive(Debug, Parser)]
+pub struct PatchCommand {
+    #[clap(subcommand)]
+    pub patch_command: PatchSubcommand
+}
+
+#[derive(Debug, Subcommand)]
+pub enum PatchSubcommand {
+    #[clap(subcommand)]
+    /// Work with patch policies
+    Policy(PatchPolicyCommand),
+    #[clap(subcommand)]
+    /// Work with patch reports
+    Report(PatchReportCommand),
+    #[clap(subcommand)]
+    /// Work with patch software titles
+    SoftwareTitles(PatchSoftwareTitleCommand),
+    #[clap(subcommand)]
+    /// Work with patch available titles
+    AvailableTitles(PatchAvailableTitleCommand),
+    #[clap(subcommand)]
+    /// Work with patch external sources
+    ExternalSources(PatchExternalSourceCommand),
+    #[clap(subcommand)]
+    /// Work with patch internal sources
+    InternalSources(PatchInternalSourceCommand)
+}
+
+#[derive(Debug, Subcommand)]
+pub enum PatchPolicyCommand {
+    /// Delete an existing patch policy
+    Delete(Id),
+    /// Show an existing patch policy
+    Show(Id),
+    /// List all patch policies
+    List,
+}
+
+#[derive(Debug, Subcommand)]
+pub enum PatchReportCommand {
+    /// Find patch reports by software id
+    ListSoftware(Id),
+    /// Find computers for specific version of patch report
+    ListComputer { id: u32, version: String }
+}
+
+#[derive(Debug, Subcommand)]
+pub enum PatchSoftwareTitleCommand {
+    /// Delete an existing patch software title
+    Delete(Id),
+    /// Show an existing patch software title
+    Show(Id),
+    /// List all patch software titles
+    List,
+}
+
+#[derive(Debug, Subcommand)]
+pub enum PatchAvailableTitleCommand {
+    /// List all available titles from a given source
+    List(Id),
+}
+
+#[derive(Debug, Subcommand)]
+pub enum PatchExternalSourceCommand {
+    /// Delete an existing external patch source
+    Delete(Id),
+    /// Show an existing external patch source
+    Show(Id),
+    /// List all external patch sources
+    List,
+}
+
+#[derive(Debug, Subcommand)]
+pub enum PatchInternalSourceCommand {
+    /// Show an existing internal patch source
+    Show(Id),
+    /// List all internal patch sources
     List,
 }
 

@@ -69,6 +69,21 @@ pub enum ApiEndpoints {
     PrinterDelete,
     PrinterShow,
     PrinterList,
+    // Patch
+    PatchPolicyDelete,
+    PatchPolicyShow,
+    PatchPolicyList,
+    PatchReportListSoftware,
+    PatchReportListComputer,
+    PatchSoftwareTitleDelete,
+    PatchSoftwareTitleShow,
+    PatchSoftwareTitleList,
+    PatchAvailableTitleList,
+    PatchExternalSourceDelete,
+    PatchExternalSourceShow,
+    PatchExternalSourceList,
+    PatchInternalSourceShow,
+    PatchInternalSourceList,
     // Groups
     GroupComputerDelete,
     GroupComputerShow,
@@ -273,6 +288,26 @@ impl ApiEndpoints {
             ApiEndpoints::PrinterList => ApiEndpointDetails {
                 method: Method::GET,
                 url: "/JSSResource/printers",
+            },
+            ApiEndpoints::PatchPolicyDelete => ApiEndpointDetails {
+                method: Method::DELETE,
+                url: "/JSSResource/patchpolicies/id/{val}",
+            },
+            ApiEndpoints::PatchPolicyShow => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/patchpolicies/id/{val}",
+            },
+            ApiEndpoints::PatchPolicyList => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/patchpolicies",
+            },
+            ApiEndpoints::PatchReportListSoftware => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/patchreports/patchsoftwaretitleid/{val}",
+            }, //TODO: This isn't going to work; we don't currently support multiple args in a single call
+            ApiEndpoints::PatchReportListComputer => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/patchreports/patchsoftwaretitleid/{val}/version/{val}",
             },
             ApiEndpoints::GroupComputerDelete => ApiEndpointDetails {
                 method: Method::DELETE,
