@@ -7,6 +7,7 @@ use crate::args::{
     UserSubcommand,
 };
 use reqwest::Method;
+use std::collections::HashMap;
 
 pub enum ApiEndpoints {
     // Util
@@ -115,15 +116,15 @@ impl ApiEndpoints {
             },
             ApiEndpoints::ComputerDelete => ApiEndpointDetails {
                 method: Method::DELETE,
-                url: "/JSSResource/computers/id/{val}",
+                url: "/JSSResource/computers/id/{id}",
             },
             ApiEndpoints::ComputerShow => ApiEndpointDetails {
                 method: Method::GET,
-                url: "/JSSResource/computers/id/{val}",
+                url: "/JSSResource/computers/id/{id}",
             },
             ApiEndpoints::ComputerSearch => ApiEndpointDetails {
                 method: Method::GET,
-                url: "/JSSResource/computers/match/{val}",
+                url: "/JSSResource/computers/match/{search_query}",
             },
             ApiEndpoints::ComputerList => ApiEndpointDetails {
                 method: Method::GET,
@@ -131,15 +132,15 @@ impl ApiEndpoints {
             },
             ApiEndpoints::MobileDelete => ApiEndpointDetails {
                 method: Method::DELETE,
-                url: "/JSSResource/mobiledevices/id/{val}",
+                url: "/JSSResource/mobiledevices/id/{id}",
             },
             ApiEndpoints::MobileShow => ApiEndpointDetails {
                 method: Method::GET,
-                url: "/JSSResource/mobiledevices/id/{val}",
+                url: "/JSSResource/mobiledevices/id/{id}",
             },
             ApiEndpoints::MobileSearch => ApiEndpointDetails {
                 method: Method::GET,
-                url: "/JSSResource/mobiledevices/match/{val}",
+                url: "/JSSResource/mobiledevices/match/{search_query}",
             },
             ApiEndpoints::MobileList => ApiEndpointDetails {
                 method: Method::GET,
@@ -147,11 +148,11 @@ impl ApiEndpoints {
             },
             ApiEndpoints::UserDelete => ApiEndpointDetails {
                 method: Method::DELETE,
-                url: "/JSSResource/users/id/{val}",
+                url: "/JSSResource/users/id/{id}",
             },
             ApiEndpoints::UserShow => ApiEndpointDetails {
                 method: Method::GET,
-                url: "/JSSResource/users/id/{val}",
+                url: "/JSSResource/users/id/{id}",
             },
             ApiEndpoints::UserList => ApiEndpointDetails {
                 method: Method::GET,
@@ -159,11 +160,11 @@ impl ApiEndpoints {
             },
             ApiEndpoints::PolicyDelete => ApiEndpointDetails {
                 method: Method::DELETE,
-                url: "/JSSResource/policies/id/{val}",
+                url: "/JSSResource/policies/id/{id}",
             },
             ApiEndpoints::PolicyShow => ApiEndpointDetails {
                 method: Method::GET,
-                url: "/JSSResource/policies/id/{val}",
+                url: "/JSSResource/policies/id/{id}",
             },
             ApiEndpoints::PolicyList => ApiEndpointDetails {
                 method: Method::GET,
@@ -171,11 +172,11 @@ impl ApiEndpoints {
             },
             ApiEndpoints::PackageDelete => ApiEndpointDetails {
                 method: Method::DELETE,
-                url: "/JSSResource/packages/id/{val}",
+                url: "/JSSResource/packages/id/{id}",
             },
             ApiEndpoints::PackageShow => ApiEndpointDetails {
                 method: Method::GET,
-                url: "/JSSResource/packages/id/{val}",
+                url: "/JSSResource/packages/id/{id}",
             },
             ApiEndpoints::PackageList => ApiEndpointDetails {
                 method: Method::GET,
@@ -183,11 +184,11 @@ impl ApiEndpoints {
             },
             ApiEndpoints::CategoryDelete => ApiEndpointDetails {
                 method: Method::DELETE,
-                url: "/JSSResource/categories/id/{val}",
+                url: "/JSSResource/categories/id/{id}",
             },
             ApiEndpoints::CategoryShow => ApiEndpointDetails {
                 method: Method::GET,
-                url: "/JSSResource/categories/id/{val}",
+                url: "/JSSResource/categories/id/{id}",
             },
             ApiEndpoints::CategoryList => ApiEndpointDetails {
                 method: Method::GET,
@@ -195,11 +196,11 @@ impl ApiEndpoints {
             },
             ApiEndpoints::DepartmentDelete => ApiEndpointDetails {
                 method: Method::DELETE,
-                url: "/JSSResource/departments/id/{val}",
+                url: "/JSSResource/departments/id/{id}",
             },
             ApiEndpoints::DepartmentShow => ApiEndpointDetails {
                 method: Method::GET,
-                url: "/JSSResource/departments/id/{val}",
+                url: "/JSSResource/departments/id/{id}",
             },
             ApiEndpoints::DepartmentList => ApiEndpointDetails {
                 method: Method::GET,
@@ -207,11 +208,11 @@ impl ApiEndpoints {
             },
             ApiEndpoints::EbookDelete => ApiEndpointDetails {
                 method: Method::DELETE,
-                url: "/JSSResource/ebooks/id/{val}",
+                url: "/JSSResource/ebooks/id/{id}",
             },
             ApiEndpoints::EbookShow => ApiEndpointDetails {
                 method: Method::GET,
-                url: "/JSSResource/ebooks/id/{val}",
+                url: "/JSSResource/ebooks/id/{id}",
             },
             ApiEndpoints::EbookList => ApiEndpointDetails {
                 method: Method::GET,
@@ -219,11 +220,11 @@ impl ApiEndpoints {
             },
             ApiEndpoints::BuildingDelete => ApiEndpointDetails {
                 method: Method::DELETE,
-                url: "/JSSResource/buildings/id/{val}",
+                url: "/JSSResource/buildings/id/{id}",
             },
             ApiEndpoints::BuildingShow => ApiEndpointDetails {
                 method: Method::GET,
-                url: "/JSSResource/buildings/id/{val}",
+                url: "/JSSResource/buildings/id/{id}",
             },
             ApiEndpoints::BuildingList => ApiEndpointDetails {
                 method: Method::GET,
@@ -231,11 +232,11 @@ impl ApiEndpoints {
             },
             ApiEndpoints::MacAppDelete => ApiEndpointDetails {
                 method: Method::DELETE,
-                url: "/JSSResource/macapplications/id/{val}",
+                url: "/JSSResource/macapplications/id/{id}",
             },
             ApiEndpoints::MacAppShow => ApiEndpointDetails {
                 method: Method::GET,
-                url: "/JSSResource/macapplications/id/{val}",
+                url: "/JSSResource/macapplications/id/{id}",
             },
             ApiEndpoints::MacAppList => ApiEndpointDetails {
                 method: Method::GET,
@@ -243,11 +244,11 @@ impl ApiEndpoints {
             },
             ApiEndpoints::MobileAppDelete => ApiEndpointDetails {
                 method: Method::DELETE,
-                url: "/JSSResource/mobiledeviceapplications/id/{val}",
+                url: "/JSSResource/mobiledeviceapplications/id/{id}",
             },
             ApiEndpoints::MobileAppShow => ApiEndpointDetails {
                 method: Method::GET,
-                url: "/JSSResource/mobiledeviceapplications/id/{val}",
+                url: "/JSSResource/mobiledeviceapplications/id/{id}",
             },
             ApiEndpoints::MobileAppList => ApiEndpointDetails {
                 method: Method::GET,
@@ -255,11 +256,11 @@ impl ApiEndpoints {
             },
             ApiEndpoints::ScriptDelete => ApiEndpointDetails {
                 method: Method::DELETE,
-                url: "/JSSResource/scripts/id/{val}",
+                url: "/JSSResource/scripts/id/{id}",
             },
             ApiEndpoints::ScriptShow => ApiEndpointDetails {
                 method: Method::GET,
-                url: "/JSSResource/scripts/id/{val}",
+                url: "/JSSResource/scripts/id/{id}",
             },
             ApiEndpoints::ScriptList => ApiEndpointDetails {
                 method: Method::GET,
@@ -267,11 +268,11 @@ impl ApiEndpoints {
             },
             ApiEndpoints::RestrictedSoftwareDelete => ApiEndpointDetails {
                 method: Method::DELETE,
-                url: "/JSSResource/restrictedsoftware/id/{val}",
+                url: "/JSSResource/restrictedsoftware/id/{id}",
             },
             ApiEndpoints::RestrictedSoftwareShow => ApiEndpointDetails {
                 method: Method::GET,
-                url: "/JSSResource/restrictedsoftware/id/{val}",
+                url: "/JSSResource/restrictedsoftware/id/{id}",
             },
             ApiEndpoints::RestrictedSoftwareList => ApiEndpointDetails {
                 method: Method::GET,
@@ -279,11 +280,11 @@ impl ApiEndpoints {
             },
             ApiEndpoints::PrinterDelete => ApiEndpointDetails {
                 method: Method::DELETE,
-                url: "/JSSResource/printers/id/{val}",
+                url: "/JSSResource/printers/id/{id}",
             },
             ApiEndpoints::PrinterShow => ApiEndpointDetails {
                 method: Method::GET,
-                url: "/JSSResource/printers/id/{val}",
+                url: "/JSSResource/printers/id/{id}",
             },
             ApiEndpoints::PrinterList => ApiEndpointDetails {
                 method: Method::GET,
@@ -311,11 +312,11 @@ impl ApiEndpoints {
             },
             ApiEndpoints::GroupComputerDelete => ApiEndpointDetails {
                 method: Method::DELETE,
-                url: "/JSSResource/computergroups/id/{val}",
+                url: "/JSSResource/computergroups/id/{id}",
             },
             ApiEndpoints::GroupComputerShow => ApiEndpointDetails {
                 method: Method::GET,
-                url: "/JSSResource/computergroups/id/{val}",
+                url: "/JSSResource/computergroups/id/{id}",
             },
             ApiEndpoints::GroupComputerList => ApiEndpointDetails {
                 method: Method::GET,
@@ -323,11 +324,11 @@ impl ApiEndpoints {
             },
             ApiEndpoints::GroupMobileDelete => ApiEndpointDetails {
                 method: Method::DELETE,
-                url: "/JSSResource/mobiledevicegroups/id/{val}",
+                url: "/JSSResource/mobiledevicegroups/id/{id}",
             },
             ApiEndpoints::GroupMobileShow => ApiEndpointDetails {
                 method: Method::GET,
-                url: "/JSSResource/mobiledevicegroups/id/{val}",
+                url: "/JSSResource/mobiledevicegroups/id/{id}",
             },
             ApiEndpoints::GroupMobileList => ApiEndpointDetails {
                 method: Method::GET,
@@ -335,11 +336,11 @@ impl ApiEndpoints {
             },
             ApiEndpoints::GroupUserDelete => ApiEndpointDetails {
                 method: Method::DELETE,
-                url: "/JSSResource/userroups/id/{val}",
+                url: "/JSSResource/userroups/id/{id}",
             },
             ApiEndpoints::GroupUserShow => ApiEndpointDetails {
                 method: Method::GET,
-                url: "/JSSResource/usergroups/id/{val}",
+                url: "/JSSResource/usergroups/id/{id}",
             },
             ApiEndpoints::GroupUserList => ApiEndpointDetails {
                 method: Method::GET,
@@ -347,11 +348,11 @@ impl ApiEndpoints {
             },
             ApiEndpoints::AdvSearchComputerDelete => ApiEndpointDetails {
                 method: Method::DELETE,
-                url: "/JSSResource/advancedcomputersearches/id/{val}",
+                url: "/JSSResource/advancedcomputersearches/id/{id}",
             },
             ApiEndpoints::AdvSearchComputerShow => ApiEndpointDetails {
                 method: Method::GET,
-                url: "/JSSResource/advancedcomputersearches/id/{val}",
+                url: "/JSSResource/advancedcomputersearches/id/{id}",
             },
             ApiEndpoints::AdvSearchComputerList => ApiEndpointDetails {
                 method: Method::GET,
@@ -359,11 +360,11 @@ impl ApiEndpoints {
             },
             ApiEndpoints::AdvSearchMobileDelete => ApiEndpointDetails {
                 method: Method::DELETE,
-                url: "/JSSResource/advancedmobiledevicesearches/id/{val}",
+                url: "/JSSResource/advancedmobiledevicesearches/id/{id}",
             },
             ApiEndpoints::AdvSearchMobileShow => ApiEndpointDetails {
                 method: Method::GET,
-                url: "/JSSResource/advancedmobiledevicesearches/id/{val}",
+                url: "/JSSResource/advancedmobiledevicesearches/id/{id}",
             },
             ApiEndpoints::AdvSearchMobileList => ApiEndpointDetails {
                 method: Method::GET,
@@ -371,11 +372,11 @@ impl ApiEndpoints {
             },
             ApiEndpoints::AdvSearchUserDelete => ApiEndpointDetails {
                 method: Method::DELETE,
-                url: "/JSSResource/advancedusersearches/id/{val}",
+                url: "/JSSResource/advancedusersearches/id/{id}",
             },
             ApiEndpoints::AdvSearchUserShow => ApiEndpointDetails {
                 method: Method::GET,
-                url: "/JSSResource/advancedusersearches/id/{val}",
+                url: "/JSSResource/advancedusersearches/id/{id}",
             },
             ApiEndpoints::AdvSearchUserList => ApiEndpointDetails {
                 method: Method::GET,
@@ -385,6 +386,8 @@ impl ApiEndpoints {
     }
 
     pub fn get_api_details(entity_type: &EntityType) -> Result<ApiDetails, String> {
+        let mut args_map : HashMap<&str, &String> = HashMap::new();
+
         let (args, endpoint) = match &entity_type {
             EntityType::Computer(command) => match &command.subcommand {
                 ComputerSubcommand::Delete(id) => {
@@ -394,7 +397,8 @@ impl ApiEndpoints {
                     (Args::Ids(id.get_ids()?), ApiEndpoints::ComputerShow)
                 }
                 ComputerSubcommand::Search { search_query } => {
-                    (Args::String(search_query), ApiEndpoints::ComputerSearch)
+                    args_map.insert("{search_query}", search_query);
+                    (Args::Strings( args_map), ApiEndpoints::ComputerSearch)
                 }
                 ComputerSubcommand::List => (Args::None, ApiEndpoints::ComputerList),
             },
@@ -404,7 +408,8 @@ impl ApiEndpoints {
                 }
                 MobileSubcommand::Show(id) => (Args::Ids(id.get_ids()?), ApiEndpoints::MobileShow),
                 MobileSubcommand::Search { search_query } => {
-                    (Args::String(search_query), ApiEndpoints::MobileSearch)
+                    args_map.insert("{search_query}", search_query);
+                    (Args::Strings(args_map), ApiEndpoints::MobileSearch)
                 }
                 MobileSubcommand::List => (Args::None, ApiEndpoints::MobileList),
             },
@@ -588,8 +593,8 @@ impl ApiEndpoints {
 
 pub enum Args<'a> {
     None,
-    String(&'a String),
-    Ids(Vec<u32>),
+    Strings(HashMap<&'static str, &'a String>),
+    Ids(Vec<String>),
 }
 
 pub struct ApiDetails<'a> {

@@ -493,6 +493,10 @@ pub struct Id {
 }
 
 fn range_validator(s: &str) -> Result<u32, String> {
+    // This section is unsafe because Rust doesn't like mutable static variables. Here it's needed
+    // because we need to validate that the user is providing an even number of arguments for the range
+    // but the validator is called per-entry. This way we can keep track of how many arguments are
+    // provided throughout parsing the array
     static mut RANGE_ARG_COUNT: u32 = 0;
     let arg: Result<u32, _> = s.to_string().parse();
 
@@ -508,9 +512,9 @@ fn range_validator(s: &str) -> Result<u32, String> {
 }
 
 impl Id {
-    pub fn get_ids(&self) -> Result<Vec<u32>, String> {
+    pub fn get_ids(&self) -> Result<Vec<String>, String> {
         let ids = if !self.id.is_empty() {
-            self.id.clone()
+            self.id.iter().map(|&i| i.to_string()).collect::<Vec<String>>()
         } else {
             self.generate_ids()?
         };
@@ -518,9 +522,9 @@ impl Id {
         Ok(ids)
     }
 
-    fn generate_ids(&self) -> Result<Vec<u32>, String> {
+    fn generate_ids(&self) -> Result<Vec<String>, String> {
         if let (Some(start), Some(end)) = (self.range.first(), self.range.get(1)) {
-            Ok((*start..=*end).collect::<Vec<u32>>())
+            Ok((*start..=*end).map(|i| i.to_string()).collect::<Vec<String>>())
         } else {
             Err("Range requires 2 numerical values <START, STOP> inclusive".to_string())
         }
