@@ -57,7 +57,7 @@ impl<'a> ApiService<'a> {
             None => 0,
             Some(ref url_builder) => match &url_builder.api_details.args {
                 Args::None => 1,
-                Args::String(_) => 1,
+                Args::Strings(_) => 1,
                 Args::Ids(ids) => ids.len() as u32,
             },
         }
@@ -181,13 +181,15 @@ impl<'a> Iterator for UrlBuilder<'a> {
                     None
                 }
             }
-            Args::String(string) => {
+            Args::Strings(args) => {
                 if self.arg_index == 0 {
                     self.arg_index += 1;
-                    Some(
-                        format!("{}{}", self.address, self.api_details.endpoint.url)
-                            .replace("{val}", string),
-                    )
+                    let mut url = format!("{}{}", self.address, self.api_details.endpoint.url);
+                    for (placeholder, arg) in args {
+                        url = url.replace(placeholder, arg);
+                    }
+
+                    Some(url)
                 } else {
                     None
                 }
@@ -195,8 +197,8 @@ impl<'a> Iterator for UrlBuilder<'a> {
             Args::Ids(ids) => {
                 if self.arg_index < ids.len() {
                     let url = format!("{}{}", self.address, self.api_details.endpoint.url).replace(
-                        "{val}",
-                        ids.get(self.arg_index).unwrap().to_string().as_str(),
+                        "{id}",
+                        ids.get(self.arg_index).unwrap(),
                     );
                     self.arg_index += 1;
                     Some(url)
