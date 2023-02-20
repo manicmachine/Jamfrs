@@ -196,10 +196,8 @@ impl<'a> Iterator for UrlBuilder<'a> {
             }
             Args::Ids(ids) => {
                 if self.arg_index < ids.len() {
-                    let url = format!("{}{}", self.address, self.api_details.endpoint.url).replace(
-                        "{id}",
-                        ids.get(self.arg_index).unwrap(),
-                    );
+                    let url = format!("{}{}", self.address, self.api_details.endpoint.url)
+                        .replace("{id}", ids.get(self.arg_index).unwrap());
                     self.arg_index += 1;
                     Some(url)
                 } else {

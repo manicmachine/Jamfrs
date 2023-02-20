@@ -2,7 +2,9 @@ use crate::args::{
     AdvSearchSubcommand, BuildingSubcommand, CategorySubcommand, ComputerAdvSearchCommand,
     ComputerGroupCommand, ComputerSubcommand, DepartmentSubcommand, EbookSubcommand, EntityType,
     GroupSubcommand, MacAppSubcommand, MobileAdvSearchCommand, MobileAppSubcommand,
-    MobileGroupCommand, MobileSubcommand, PackageSubcommand, PolicySubcommand, PrinterSubcommand,
+    MobileGroupCommand, MobileSubcommand, PackageSubcommand, PatchAvailableTitleCommand,
+    PatchExternalSourceCommand, PatchInternalSourceCommand, PatchPolicyCommand, PatchReportCommand,
+    PatchSoftwareTitleCommand, PatchSubcommand, PolicySubcommand, PrinterSubcommand,
     RestrictedSoftwareSubcommand, ScriptSubcommand, UserAdvSearchCommand, UserGroupCommand,
     UserSubcommand,
 };
@@ -80,9 +82,9 @@ pub enum ApiEndpoints {
     PatchSoftwareTitleShow,
     PatchSoftwareTitleList,
     PatchAvailableTitleList,
-    PatchExternalSourceDelete,
     PatchExternalSourceShow,
     PatchExternalSourceList,
+    PatchExternalSourceDelete,
     PatchInternalSourceShow,
     PatchInternalSourceList,
     // Groups
@@ -292,11 +294,11 @@ impl ApiEndpoints {
             },
             ApiEndpoints::PatchPolicyDelete => ApiEndpointDetails {
                 method: Method::DELETE,
-                url: "/JSSResource/patchpolicies/id/{val}",
+                url: "/JSSResource/patchpolicies/id/{id}",
             },
             ApiEndpoints::PatchPolicyShow => ApiEndpointDetails {
                 method: Method::GET,
-                url: "/JSSResource/patchpolicies/id/{val}",
+                url: "/JSSResource/patchpolicies/id/{id}",
             },
             ApiEndpoints::PatchPolicyList => ApiEndpointDetails {
                 method: Method::GET,
@@ -304,11 +306,47 @@ impl ApiEndpoints {
             },
             ApiEndpoints::PatchReportListSoftware => ApiEndpointDetails {
                 method: Method::GET,
-                url: "/JSSResource/patchreports/patchsoftwaretitleid/{val}",
-            }, //TODO: This isn't going to work; we don't currently support multiple args in a single call
+                url: "/JSSResource/patchreports/patchsoftwaretitleid/{id}",
+            },
             ApiEndpoints::PatchReportListComputer => ApiEndpointDetails {
                 method: Method::GET,
-                url: "/JSSResource/patchreports/patchsoftwaretitleid/{val}/version/{val}",
+                url: "/JSSResource/patchreports/patchsoftwaretitleid/{id}/version/{software_version}",
+            },
+            ApiEndpoints::PatchSoftwareTitleDelete => ApiEndpointDetails {
+                method: Method::DELETE,
+                url: "/JSSResource/patchsoftwaretitles/id/{id}",
+            },
+            ApiEndpoints::PatchSoftwareTitleShow => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/patchsoftwaretitles/id/{id}",
+            },
+            ApiEndpoints::PatchSoftwareTitleList => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/patchsoftwaretitles",
+            },
+            ApiEndpoints::PatchAvailableTitleList => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/patchavailabletitles/sourceid/{id}",
+            },
+            ApiEndpoints::PatchExternalSourceShow => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/patchexternalsources/id/{id}",
+            },
+            ApiEndpoints::PatchExternalSourceList => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/patchexternalsources",
+            },
+            ApiEndpoints::PatchExternalSourceDelete => ApiEndpointDetails {
+                method: Method::DELETE,
+                url: "/JSSResource/patchexternalsources/id/{id}",
+            },
+            ApiEndpoints::PatchInternalSourceShow => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/patchinternalsources/id/{id}",
+            },
+            ApiEndpoints::PatchInternalSourceList => ApiEndpointDetails {
+                method: Method::GET,
+                url: "/JSSResource/patchinternalsources",
             },
             ApiEndpoints::GroupComputerDelete => ApiEndpointDetails {
                 method: Method::DELETE,
@@ -386,7 +424,7 @@ impl ApiEndpoints {
     }
 
     pub fn get_api_details(entity_type: &EntityType) -> Result<ApiDetails, String> {
-        let mut args_map : HashMap<&str, &String> = HashMap::new();
+        let mut args_map: HashMap<&str, &String> = HashMap::new();
 
         let (args, endpoint) = match &entity_type {
             EntityType::Computer(command) => match &command.subcommand {
@@ -398,7 +436,7 @@ impl ApiEndpoints {
                 }
                 ComputerSubcommand::Search { search_query } => {
                     args_map.insert("{search_query}", search_query);
-                    (Args::Strings( args_map), ApiEndpoints::ComputerSearch)
+                    (Args::Strings(args_map), ApiEndpoints::ComputerSearch)
                 }
                 ComputerSubcommand::List => (Args::None, ApiEndpoints::ComputerList),
             },
@@ -512,6 +550,75 @@ impl ApiEndpoints {
                     (Args::Ids(id.get_ids()?), ApiEndpoints::PrinterShow)
                 }
                 PrinterSubcommand::List => (Args::None, ApiEndpoints::PrinterList),
+            },
+            EntityType::Patch(command) => match &command.patch_command {
+                PatchSubcommand::Policy(policy_subcommand) => match &policy_subcommand {
+                    PatchPolicyCommand::Delete(id) => {
+                        (Args::Ids(id.get_ids()?), ApiEndpoints::PatchPolicyDelete)
+                    }
+                    PatchPolicyCommand::Show(id) => {
+                        (Args::Ids(id.get_ids()?), ApiEndpoints::PatchPolicyShow)
+                    }
+                    PatchPolicyCommand::List => (Args::None, ApiEndpoints::PatchPolicyList),
+                },
+                PatchSubcommand::Report(command) => match &command {
+                    PatchReportCommand::ListSoftware(id) => (
+                        Args::Ids(id.get_ids()?),
+                        ApiEndpoints::PatchReportListSoftware,
+                    ),
+                    PatchReportCommand::ListComputer {
+                        id,
+                        software_version,
+                    } => {
+                        args_map.insert("{id}", id);
+                        args_map.insert("{software_version}", software_version);
+                        (
+                            Args::Strings(args_map),
+                            ApiEndpoints::PatchReportListComputer,
+                        )
+                    }
+                },
+                PatchSubcommand::SoftwareTitles(command) => match &command {
+                    PatchSoftwareTitleCommand::Delete(id) => (
+                        Args::Ids(id.get_ids()?),
+                        ApiEndpoints::PatchSoftwareTitleDelete,
+                    ),
+                    PatchSoftwareTitleCommand::Show(id) => (
+                        Args::Ids(id.get_ids()?),
+                        ApiEndpoints::PatchSoftwareTitleShow,
+                    ),
+                    PatchSoftwareTitleCommand::List => {
+                        (Args::None, ApiEndpoints::PatchSoftwareTitleList)
+                    }
+                },
+                PatchSubcommand::AvailableTitles(command) => match &command {
+                    PatchAvailableTitleCommand::List(id) => (
+                        Args::Ids(id.get_ids()?),
+                        ApiEndpoints::PatchAvailableTitleList,
+                    ),
+                },
+                PatchSubcommand::ExternalSources(command) => match &command {
+                    PatchExternalSourceCommand::Delete(id) => (
+                        Args::Ids(id.get_ids()?),
+                        ApiEndpoints::PatchExternalSourceDelete,
+                    ),
+                    PatchExternalSourceCommand::Show(id) => (
+                        Args::Ids(id.get_ids()?),
+                        ApiEndpoints::PatchExternalSourceShow,
+                    ),
+                    PatchExternalSourceCommand::List => {
+                        (Args::None, ApiEndpoints::PatchExternalSourceList)
+                    }
+                },
+                PatchSubcommand::InternalSources(command) => match &command {
+                    PatchInternalSourceCommand::Show(id) => (
+                        Args::Ids(id.get_ids()?),
+                        ApiEndpoints::PatchInternalSourceShow,
+                    ),
+                    PatchInternalSourceCommand::List => {
+                        (Args::None, ApiEndpoints::PatchInternalSourceList)
+                    }
+                },
             },
             EntityType::Group(command) => match &command.group_command {
                 GroupSubcommand::Computer(group_subcommand) => match &group_subcommand {

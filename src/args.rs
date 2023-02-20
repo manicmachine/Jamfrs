@@ -307,7 +307,7 @@ pub enum PrinterSubcommand {
 #[derive(Debug, Parser)]
 pub struct PatchCommand {
     #[clap(subcommand)]
-    pub patch_command: PatchSubcommand
+    pub patch_command: PatchSubcommand,
 }
 
 #[derive(Debug, Subcommand)]
@@ -329,7 +329,7 @@ pub enum PatchSubcommand {
     ExternalSources(PatchExternalSourceCommand),
     #[clap(subcommand)]
     /// Work with patch internal sources
-    InternalSources(PatchInternalSourceCommand)
+    InternalSources(PatchInternalSourceCommand),
 }
 
 #[derive(Debug, Subcommand)]
@@ -344,10 +344,14 @@ pub enum PatchPolicyCommand {
 
 #[derive(Debug, Subcommand)]
 pub enum PatchReportCommand {
-    /// Find patch reports by software id
+    /// Display patch reports by software title id
     ListSoftware(Id),
-    /// Find computers for specific version of patch report
-    ListComputer { id: u32, version: String }
+    /// Display computers for specific version
+    ListComputer {
+        #[arg(value_parser = u32_to_string_validator)]
+        id: String,
+        software_version: String,
+    },
 }
 
 #[derive(Debug, Subcommand)]
@@ -362,7 +366,8 @@ pub enum PatchSoftwareTitleCommand {
 
 #[derive(Debug, Subcommand)]
 pub enum PatchAvailableTitleCommand {
-    /// List all available titles from a given source
+    /// List all available titles from a given source (internal/external).
+    /// NOTE: Due to a Jamf Pro bug, JSON requests will only get the first title -- Recommend requesting XML
     List(Id),
 }
 
@@ -511,10 +516,22 @@ fn range_validator(s: &str) -> Result<u32, String> {
     Err("range only accepts 2 numerical values <START, STOP> inclusive".to_string())
 }
 
+fn u32_to_string_validator(s: &str) -> Result<String, String> {
+    let arg: Result<u32, _> = s.to_string().parse();
+
+    return match arg {
+        Ok(_) => Ok(s.to_string()),
+        Err(e) => Err(e.to_string()),
+    };
+}
+
 impl Id {
     pub fn get_ids(&self) -> Result<Vec<String>, String> {
         let ids = if !self.id.is_empty() {
-            self.id.iter().map(|&i| i.to_string()).collect::<Vec<String>>()
+            self.id
+                .iter()
+                .map(|&i| i.to_string())
+                .collect::<Vec<String>>()
         } else {
             self.generate_ids()?
         };
@@ -524,7 +541,9 @@ impl Id {
 
     fn generate_ids(&self) -> Result<Vec<String>, String> {
         if let (Some(start), Some(end)) = (self.range.first(), self.range.get(1)) {
-            Ok((*start..=*end).map(|i| i.to_string()).collect::<Vec<String>>())
+            Ok((*start..=*end)
+                .map(|i| i.to_string())
+                .collect::<Vec<String>>())
         } else {
             Err("Range requires 2 numerical values <START, STOP> inclusive".to_string())
         }
