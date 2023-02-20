@@ -7,7 +7,6 @@ for several records at a time. Or maybe you want a quick and easy way to export 
 Jamfrs is a command line tool for quickly querying the Jamf Pro server built using Rust. It can be used to lookup and 
 export data either as XML or JSON. 
 
-
 ### Currently Jamfrs supports the following queries:
 | Entity                  | Capabilities                                                                                 |
 |-------------------------|----------------------------------------------------------------------------------------------|
@@ -25,6 +24,14 @@ export data either as XML or JSON.
 | Script                  | - Delete<br/>- Show<br/>- List                                                               |
 | Groups (Smart & Static) | - Delete<br/>- Show<br/>- List                                                               |
 | Advanced Search         | - Delete<br/>- Show<br/>- List                                                               |
+| Restricted Software     | - Delete<br/>- Show<br/>- List                                                               |
+| Printer                 | - Delete<br/>- Show<br/>- List                                                               |
+| Patch Policy            | - Delete<br/>- Show<br/>- List                                                               |
+| Patch Report            | - List Software<br/>- List Computer                                                          |
+| Patch Software Title    | - Delete<br/>- Show<br/>- List                                                               |
+| Patch Available Titles  | - List                                                                                       |
+| Patch External Source   | - Delete<br/>- Show<br/>- List                                                               |
+| Patch Internal Sourc    | - Show<br/>- List                                                                            |
 
 **Supports wildcards*
  
@@ -33,29 +40,32 @@ export data either as XML or JSON.
 Usage: jamfrs [OPTIONS] --server <SERVER_ADDRESS> --user <USERNAME> --password <PASSWORD> <COMMAND>
 
 Commands:
-  computer    Work with computer records
-  mobile      Work with mobile device records
-  user        Work with users records
-  policy      Work with policies
-  package     Work with packages
-  category    Work with categories
-  department  Work with departments
-  ebook       Work with ebooks
-  building    Work with buildings
-  mac-app     Work with mac applications
-  mobile-app  Work with mobile device applications
-  script      Work with scripts
-  group       Work with smart & static groups
-  adv-search  Work with advanced searches
-  help        Print this message or the help of the given subcommand(s)
+  adv-search           Work with advanced searches
+  building             Work with buildings
+  category             Work with categories
+  computer             Work with computer records
+  department           Work with departments
+  ebook                Work with ebooks
+  group                Work with smart & static groups
+  mac-app              Work with mac applications
+  mobile               Work with mobile device records
+  mobile-app           Work with mobile device applications
+  package              Work with packages
+  patch                Work with patch
+  policy               Work with policies
+  printer              Work with printers
+  restricted-software  Work with restricted software
+  script               Work with scripts
+  user                 Work with users records
+  help                 Print this message or the help of the given subcommand(s)
 
 Options:
   -s, --server <SERVER_ADDRESS>  Hostname or IP address for Jamf Pro server
-      --port <PORT>              Port that the Jamf Pro server is listening to; Defaults to 443 for Jamf cloud instances, 8443 otherwise
+      --port <PORT>              Port that the Jamf Pro server is listening to; Defaults to 443 for Jamf cloud instances, 8443 for others. If 'insecure' is passed then the default is 8080
   -u, --user <USERNAME>          Username used for API calls
   -p, --password <PASSWORD>      Password used by API user
       --pretty                   Pretty print output
-      --json                     Request JSON data instead of the default XML
+      --json                     Request JSON data instead of the default XML; Note that delete queries always respond with XML
       --insecure                 Allow insecure traffic; Defaults to False. Useful with HTTP or untrusted SSL certificates
   -h, --help                     Print help information
   -V, --version                  Print version information
@@ -219,6 +229,7 @@ Commands:
   mobile    Work with mobile device groups
   user      Work with user groups
 ```
+
 ##### Group Subcommand: computer
 ```
 Work with computer groups
@@ -302,11 +313,113 @@ Commands:
   show    Show an existing user advanced search
   list    List all user advanced searches
 ```
+
+##### Command: restricted-software
+```
+Work with restricted software
+
+Usage: jamfrs restricted-software <COMMAND>
+
+Commands:
+  delete  Delete an existing restricted software
+  show    Show an existing restricted software
+  list    List all restricted software
+```
+
+##### Command: printer
+```
+Work with printers
+
+Usage: jamfrs printer <COMMAND>
+
+Commands:
+  delete  Delete an existing printer
+  show    Show an existing printer
+  list    List all printers
+```
+
+##### Command: patch
+```
+Work with patch
+
+Usage: jamfrs patch <COMMAND>
+
+Commands:
+  policy            Work with patch policies
+  report            Work with patch reports
+  software-titles   Work with patch software titles
+  available-titles  Work with patch available titles
+  external-sources  Work with patch external sources
+  internal-sources  Work with patch internal sources
+```
+
+##### Patch Subcommand: policy
+```
+Work with patch policies
+
+Usage: jamfrs patch policy <COMMAND>
+
+Commands:
+  delete  Delete an existing patch policy
+  show    Show an existing patch policy
+  list    List all patch policies
+```
+
+##### Patch Subcommand: report
+```
+Work with patch reports
+
+Usage: jamfrs patch report <COMMAND>
+
+Commands:
+  list-software  Display patch reports by software title id
+  list-computer  Display computers for specific version
+```
+
+##### Patch Subcommand: software-titles
+```
+Work with patch software titles
+
+Usage: jamfrs patch software-titles <COMMAND>
+
+Commands:
+  delete  Delete an existing patch software title
+  show    Show an existing patch software title
+  list    List all patch software titles
+```
+
+##### Patch Subcommand: external-sources
+```
+Work with patch external sources
+
+Usage: jamfrs patch external-sources <COMMAND>
+
+Commands:
+  delete  Delete an existing external patch source
+  show    Show an existing external patch source
+  list    List all external patch sources
+```
+
+##### Patch Subcommand: internal-sources
+```
+Work with patch internal sources
+
+Usage: jamfrs patch internal-sources <COMMAND>
+
+Commands:
+  show  Show an existing internal patch source
+  list  List all internal patch sources
+```
+
 </details>
 
 ## Build
 Being a Rust application, Jamfrs is built using `cargo` ([get cargo](https://www.rust-lang.org/learn/get-started)). To build, simply clone the repo, navigate to
 the `jamfrs` directory containing the `Cargo.toml` file, and run `cargo build --release`. You'll find the newly created executable in `jamfrs/target/release`. 
+
+## Known Issues
+- Jamf Pro doesn't respect `Accept: application/json` for DELETE calls, resulting in all delete calls returning XML instead
+- When using the `json` flag, Jamf Pro doesn't return the entire list of titles when requesting all available patch titles - Just the first and the number of titles. For the entire list, don't use the `json` flag
 
 ## License
 MIT License
