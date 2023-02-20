@@ -28,10 +28,10 @@ export data either as XML or JSON.
 | Printer                 | - Delete<br/>- Show<br/>- List                                                               |
 | Patch Policy            | - Delete<br/>- Show<br/>- List                                                               |
 | Patch Report            | - List Software<br/>- List Computer                                                          |
-| Patch Software Title    | - Delete<br/>- Show<br/>- List                                                               |
+| Patch Software Titles   | - Delete<br/>- Show<br/>- List                                                               |
 | Patch Available Titles  | - List                                                                                       |
 | Patch External Source   | - Delete<br/>- Show<br/>- List                                                               |
-| Patch Internal Sourc    | - Show<br/>- List                                                                            |
+| Patch Internal Source   | - Show<br/>- List                                                                            |
 
 **Supports wildcards*
  
@@ -386,6 +386,16 @@ Commands:
   delete  Delete an existing patch software title
   show    Show an existing patch software title
   list    List all patch software titles
+```
+
+##### Patch Subcommand: available-titles
+```
+Work with patch available titles
+
+Usage: jamfrs patch available-titles <COMMAND>
+
+Commands:
+  list  List all available titles from a given source (internal/external). NOTE: Due to a Jamf Pro bug, JSON requests will only get the first title -- Recommend requesting XML
 ```
 
 ##### Patch Subcommand: external-sources
