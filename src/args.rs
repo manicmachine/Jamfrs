@@ -32,6 +32,10 @@ pub struct JamfrsArgs {
     #[arg(long)]
     pub insecure: bool,
 
+    /// Confirm DELETE calls automatically; Defaults to False
+    #[arg(short, long, default_value = "false")]
+    pub confirm: bool,
+
     #[command(subcommand)]
     pub entity_type: EntityType,
 }
@@ -519,10 +523,10 @@ fn range_validator(s: &str) -> Result<u32, String> {
 fn u32_to_string_validator(s: &str) -> Result<String, String> {
     let arg: Result<u32, _> = s.to_string().parse();
 
-    return match arg {
+    match arg {
         Ok(_) => Ok(s.to_string()),
         Err(e) => Err(e.to_string()),
-    };
+    }
 }
 
 impl Id {

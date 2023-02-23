@@ -58,7 +58,7 @@ impl Session {
             // Check if the user provided the port number as part of the server_address, and if so,
             // do not append the port provided by the --port flag to the address
             if !port_pattern.is_match(&addr) {
-                addr.push_str(format!(":{}", port_val).as_str());
+                addr.push_str(format!(":{port_val}").as_str());
             } else if port.is_some() {
                 return Err("Error: Don't include a port with the server_address while using the --port flag");
             }
@@ -84,7 +84,7 @@ impl Session {
             }
         };
 
-        Result::Ok(())
+        Ok(())
     }
 }
 

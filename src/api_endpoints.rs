@@ -310,7 +310,8 @@ impl ApiEndpoints {
             },
             ApiEndpoints::PatchReportListComputer => ApiEndpointDetails {
                 method: Method::GET,
-                url: "/JSSResource/patchreports/patchsoftwaretitleid/{id}/version/{software_version}",
+                url:
+                    "/JSSResource/patchreports/patchsoftwaretitleid/{id}/version/{software_version}",
             },
             ApiEndpoints::PatchSoftwareTitleDelete => ApiEndpointDetails {
                 method: Method::DELETE,

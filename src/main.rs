@@ -9,7 +9,9 @@ use crate::api_service::ApiService;
 use crate::session::Session;
 use args::JamfrsArgs;
 use clap::Parser;
+use reqwest::Method;
 use serde_json::Value;
+use std::io;
 use std::io::stdout;
 use std::process::exit;
 use xmltree::{Element, EmitterConfig};
@@ -27,15 +29,29 @@ async fn main() {
     ) {
         Ok(service) => service,
         Err(err) => {
-            eprintln!("Failed to create network service: {}", err);
+            eprintln!("Failed to create network service: {err}");
             exit(1);
         }
     };
 
     match api_service.set_commands(&args.entity_type) {
-        Ok(_) => { /* continue */ }
+        Ok(api_details) => {
+            if !args.confirm && api_details.endpoint.method == Method::DELETE {
+                let mut input = String::new();
+                println!(
+                    "Confirm you wish to DELETE {} record(s): (Y/N): ",
+                    &api_service.number_of_commands()
+                );
+
+                io::stdin().read_line(&mut input).unwrap();
+
+                if input.to_lowercase().trim().ne("y") {
+                    exit(0);
+                }
+            }
+        }
         Err(err) => {
-            eprintln!("{}", err);
+            eprintln!("{err}");
             exit(1);
         }
     }
@@ -64,10 +80,10 @@ async fn main() {
                             Ok(json) => {
                                 println!("{}", serde_json::to_string_pretty(&json).unwrap())
                             }
-                            Err(_) => println!("{}", res),
+                            Err(_) => println!("{res}"),
                         }
                     } else {
-                        print!("{},", res);
+                        print!("{res},");
                     }
                 }
                 Err(err) => errors.push(err.to_string()),
@@ -75,7 +91,7 @@ async fn main() {
             None => {
                 // Channel has been closed and we're done
                 for err in &errors {
-                    println!("\nError: {}", err);
+                    println!("\nError: {err}");
                 }
 
                 break;

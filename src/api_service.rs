@@ -43,13 +43,14 @@ impl<'a> ApiService<'a> {
         })
     }
 
-    pub fn set_commands(&mut self, commands: &'a EntityType) -> Result<(), String> {
+    pub fn set_commands(&mut self, commands: &'a EntityType) -> Result<&ApiDetails, String> {
         self.url_builder = Some(UrlBuilder::new(
             self.jps_session.server_address.clone(),
             ApiEndpoints::get_api_details(commands)?,
         ));
 
-        Ok(())
+        let api_details_ref = &self.url_builder.as_ref().unwrap().api_details;
+        Ok(api_details_ref)
     }
 
     pub fn number_of_commands(&self) -> u32 {
@@ -71,7 +72,7 @@ impl<'a> ApiService<'a> {
                 .expect("Failed to authenticate with server");
         }
 
-        let accept_type = format!("application/{}", if self.json { "json " } else { "xml" });
+        let accept_type = format!("application/{}", if self.json { "json" } else { "xml" });
         let (tx, rx) = channel(self.number_of_commands() as usize);
 
         while let Some(url) = self.url_builder.as_mut().unwrap().next() {
