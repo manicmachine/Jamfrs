@@ -42,40 +42,40 @@ pub struct JamfrsArgs {
 
 #[derive(Debug, Subcommand)]
 pub enum EntityType {
-    /// Work with computer records
-    Computer(ComputerCommand),
-    /// Work with mobile device records
-    Mobile(MobileCommand),
-    /// Work with users records
-    User(UserCommand),
-    /// Work with policies
-    Policy(PolicyCommand),
-    /// Work with packages
-    Package(PackageCommand),
+    /// Work with advanced searches
+    AdvSearch(AdvSearchCommand),
+    /// Work with buildings
+    Building(BuildingCommand),
     /// Work with categories
     Category(CategoryCommand),
+    /// Work with computer records
+    Computer(ComputerCommand),
     /// Work with departments
     Department(DepartmentCommand),
     /// Work with ebooks
     Ebook(EbookCommand),
-    /// Work with buildings
-    Building(BuildingCommand),
-    /// Work with mac applications
-    MacApp(MacAppCommand),
-    /// Work with mobile device applications
-    MobileApp(MobileAppCommand),
-    /// Work with scripts
-    Script(ScriptCommand),
-    /// Work with restricted software
-    RestrictedSoftware(RestrictedSoftwareCommand),
-    /// Work with printers
-    Printer(PrinterCommand),
-    /// Work with patch
-    Patch(PatchCommand),
     /// Work with smart & static groups
     Group(GroupCommand),
-    /// Work with advanced searches
-    AdvSearch(AdvSearchCommand),
+    /// Work with mac applications
+    MacApp(MacAppCommand),
+    /// Work with mobile device records
+    Mobile(MobileCommand),
+    /// Work with mobile device applications
+    MobileApp(MobileAppCommand),
+    /// Work with packages
+    Package(PackageCommand),
+    /// Work with patch
+    Patch(PatchCommand),
+    /// Work with policies
+    Policy(PolicyCommand),
+    /// Work with printers
+    Printer(PrinterCommand),
+    /// Work with restricted software
+    RestrictedSoftware(RestrictedSoftwareCommand),
+    /// Work with scripts
+    Script(ScriptCommand),
+    /// Work with users records
+    User(UserCommand),
 }
 
 #[derive(Debug, Args)]

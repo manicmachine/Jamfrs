@@ -67,6 +67,7 @@ Options:
       --pretty                   Pretty print output
       --json                     Request JSON data instead of the default XML; Note that delete queries always respond with XML
       --insecure                 Allow insecure traffic; Defaults to False. Useful with HTTP or untrusted SSL certificates
+  -c, --confirm                  Confirm DELETE calls automatically; Defaults to False
   -h, --help                     Print help information
   -V, --version                  Print version information
   ```
