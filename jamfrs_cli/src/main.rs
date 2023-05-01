@@ -1,14 +1,9 @@
-mod api_endpoints;
-mod api_service;
-mod api_token;
+mod arg_mappings;
 mod args;
-mod session;
 
-use crate::api_endpoints::{ApiDetails, ApiEndpoints, Args};
-use crate::api_service::ApiService;
-use crate::session::Session;
 use args::JamfrsArgs;
 use clap::Parser;
+use jamfrs_lib::api_service::JamfApiService;
 use reqwest::Method;
 use serde_json::Value;
 use std::io;
@@ -19,7 +14,7 @@ use xmltree::{Element, EmitterConfig};
 #[tokio::main]
 async fn main() {
     let args = JamfrsArgs::parse();
-    let mut api_service = match ApiService::new(
+    let mut jamf_api_service = match JamfApiService::new(
         args.server_address,
         args.port,
         args.username,
@@ -34,13 +29,13 @@ async fn main() {
         }
     };
 
-    match api_service.set_commands(&args.entity_type) {
+    match jamf_api_service.set_commands(arg_mappings::get_api_details(&args.entity_type).unwrap()) {
         Ok(api_details) => {
             if !args.confirm && api_details.endpoint.method == Method::DELETE {
                 let mut input = String::new();
                 println!(
                     "Confirm you wish to DELETE {} record(s): (Y/N): ",
-                    &api_service.number_of_commands()
+                    &jamf_api_service.number_of_commands()
                 );
 
                 io::stdin().read_line(&mut input).unwrap();
@@ -56,7 +51,7 @@ async fn main() {
         }
     }
 
-    let mut rx = api_service.process_commands().await;
+    let mut rx = jamf_api_service.process_commands().await;
     let mut errors: Vec<String> = Vec::new();
 
     loop {
