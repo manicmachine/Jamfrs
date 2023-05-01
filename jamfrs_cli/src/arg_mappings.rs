@@ -1,8 +1,8 @@
 use crate::args::*;
-use jamfrs_lib::api_service::api_endpoints::{ApiDetails, ApiEndpoints, Args};
+use jamfrs_lib::api_service::api_endpoints::{ApiEndpoints, Args, CommandDetails};
 use std::collections::HashMap;
 
-pub fn get_api_details(entity_type: &EntityType) -> Result<ApiDetails, String> {
+pub fn get_command_details(entity_type: &EntityType) -> Result<CommandDetails, String> {
     let mut args_map: HashMap<&str, String> = HashMap::new();
 
     let (args, endpoint) = match &entity_type {
@@ -242,7 +242,7 @@ pub fn get_api_details(entity_type: &EntityType) -> Result<ApiDetails, String> {
         },
     };
 
-    Ok(ApiDetails {
+    Ok(CommandDetails {
         args,
         endpoint: endpoint.usage(),
     })

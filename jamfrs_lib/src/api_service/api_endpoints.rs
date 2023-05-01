@@ -422,7 +422,7 @@ pub enum Args {
     Ids(Vec<String>),
 }
 
-pub struct ApiDetails {
+pub struct CommandDetails {
     pub args: Args,
     pub endpoint: ApiEndpointDetails,
 }

@@ -1,7 +1,8 @@
 pub mod api_service {
     pub mod api_endpoints;
+
     mod session;
-    use api_endpoints::{ApiDetails, ApiEndpoints, Args};
+    use api_endpoints::{ApiEndpoints, Args, CommandDetails};
     use reqwest::Client;
     use reqwest::Method;
     use session::Session;
@@ -15,7 +16,6 @@ pub mod api_service {
         url_builder: Option<UrlBuilder>,
     }
 
-    // TODO: Return different Error types to better identify the cause of an error so that we can make better decisions in response
     impl JamfApiService {
         pub fn new(
             server_address: String,
@@ -47,7 +47,10 @@ pub mod api_service {
             })
         }
 
-        pub fn set_commands(&mut self, commands: ApiDetails) -> Result<&ApiDetails, String> {
+        pub fn set_commands(
+            &mut self,
+            commands: CommandDetails,
+        ) -> Result<&CommandDetails, String> {
             self.url_builder = Some(UrlBuilder::new(
                 self.jps_session.server_address.clone(),
                 commands,
@@ -159,12 +162,12 @@ pub mod api_service {
 
     struct UrlBuilder {
         address: String,
-        api_details: ApiDetails,
+        api_details: CommandDetails,
         arg_index: usize,
     }
 
     impl UrlBuilder {
-        fn new(address: String, api_details: ApiDetails) -> Self {
+        fn new(address: String, api_details: CommandDetails) -> Self {
             UrlBuilder {
                 address,
                 api_details,

@@ -29,9 +29,11 @@ async fn main() {
         }
     };
 
-    match jamf_api_service.set_commands(arg_mappings::get_api_details(&args.entity_type).unwrap()) {
-        Ok(api_details) => {
-            if !args.confirm && api_details.endpoint.method == Method::DELETE {
+    match jamf_api_service
+        .set_commands(arg_mappings::get_command_details(&args.entity_type).unwrap())
+    {
+        Ok(command_details) => {
+            if !args.confirm && command_details.endpoint.method == Method::DELETE {
                 let mut input = String::new();
                 println!(
                     "Confirm you wish to DELETE {} record(s): (Y/N): ",
@@ -75,7 +77,11 @@ async fn main() {
                             Ok(json) => {
                                 println!("{}", serde_json::to_string_pretty(&json).unwrap())
                             }
-                            Err(_) => println!("{res}"),
+                            Err(_) => {
+                                // Gracefully handle the stupid scenario where jamf ignores our request for JSON and returns XML anyways
+                                // TODO: Convert XML into JSON when our request isn't respected
+                                println!("{res}")
+                            }
                         }
                     } else {
                         print!("{res},");
