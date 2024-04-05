@@ -1,7 +1,7 @@
 # Jamfrs
 
 ## Purpose
-Jamfrs is a CLI tool for interacting with the Jamf Pro Server. It's purpose is to act as an autiomation tool to streamline
+Jamfrs is a CLI tool for interacting with the Jamf Pro Server. It's purpose is to act as an automation tool to streamline
 workflows. Currently only supports Read and Deletion operations but ideally will have full CRUD support in the future (time
 permitting). When performing Read operations, Jamfrs can return data as either XML or JSON.
 
