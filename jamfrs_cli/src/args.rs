@@ -5,19 +5,19 @@ use clap::{Args, Parser, Subcommand};
 #[command(propagate_version = true)]
 pub struct JamfrsArgs {
     /// Hostname or IP address for Jamf Pro server
-    #[arg(short, long = "server")]
+    #[arg(short, long = "server", env = "JAMFRS_SERVER_ADDRESS")]
     pub server_address: String,
 
     /// Port that the Jamf Pro server is listening to; Defaults to 443 for Jamf cloud instances, 8443 for others. If 'insecure' is passed then the default is 8080.
-    #[arg(long)]
+    #[arg(long, env = "JAMFRS_PORT")]
     pub port: Option<u16>,
 
     /// Username used for API calls
-    #[arg(short, long = "user")]
+    #[arg(short, long = "user", env = "JAMFRS_USERNAME")]
     pub username: String,
 
     /// Password used by API user
-    #[arg(short, long)]
+    #[arg(short, long, env = "JAMFRS_PASSWORD")]
     pub password: String,
 
     /// Pretty print output
